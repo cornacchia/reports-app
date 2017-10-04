@@ -1,10 +1,11 @@
 var express = require('express')
+var passport = require('passport')
 var router = express.Router()
 
 /* Attempt login */
-router.post('/', function(req, res, next) {
-  var username = req.body.username
-  var password = req.body.password
+router.post('/',  passport.authenticate('local', { failureRedirect: '/' }),
+function(req, res) {
+  res.redirect('/admin/register')
 })
 
 module.exports = router
