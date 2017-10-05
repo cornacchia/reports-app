@@ -8,6 +8,19 @@ router.get('/register', function(req, res, next) {
   res.render('register-user', { title: 'Registra nuovo utente' })
 })
 
+router.get('/userList', function(req, res, next) {
+  var db = database.get()
+
+  db.collection('User').find({}).toArray(function (err, users) {
+    if (err) {
+      console.error(err)
+      return res.serverError()
+    }
+
+    return res.render('userList', { title: 'Lista utenti', users: users })
+  })
+})
+
 /* Register new user */
 router.post('/register', function(req, res, next) {
   var db = database.get()
@@ -28,7 +41,7 @@ router.post('/register', function(req, res, next) {
       return res.serverError()
     }
 
-    return res.status(200).send()
+    return res.redirext('/admin/userList')
   })
 
 })

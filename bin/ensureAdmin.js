@@ -13,7 +13,7 @@ module.exports = function (req, res, next) {
     if (user.type === 'admin') {
       return next()
     } else {
-      return res.redirect('/compile')
+      return res.redirect('/user')
     }
   })
 }
