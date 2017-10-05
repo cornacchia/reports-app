@@ -1,6 +1,6 @@
 var express = require('express')
 var database = require('../bin/db')
-var scrypt = require('scryptsy')
+var encrypt = require('../bin/encrypt')
 var config = require('../config')
 var router = express.Router()
 
@@ -8,21 +8,14 @@ var router = express.Router()
 router.post('/register', function(req, res, next) {
   var db = database.get()
 
-  var cryptoPassword = scrypt(
-    req.body.password,
-    config.scrypt.salt,
-    config.scrypt.N,
-    config.scrypt.r,
-    config.scrypt.p,
-    config.scrypt.lenBytes
-  )
+  var cryptoPassword = encrypt(req.body.password)
 
   var newUser = {
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     type: req.body.type,
     username: req.body.username,
-    password: cryptoPassword.toString('hex')
+    password: cryptoPassword
   }
 
   db.collection('User').insertOne(newUser, function (err) {

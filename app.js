@@ -1,8 +1,6 @@
 var express = require('express');
 var expressSession = require('express-session')
-var passport = require('passport')
-var scrypt = require('scryptsy')
-var LocalStrategy = require('passport-local')
+var passport = require('./bin/passport')
 var database = require('./bin/db')
 var path = require('path');
 var logger = require('morgan');
@@ -16,43 +14,6 @@ var login = require('./routes/login')
 var user = require('./routes/user')
 
 var app = express();
-
-// passport configuration
-passport.use(new LocalStrategy(function (username, password, done) {
-  var db = database.get()
-  db.collection('User').findOne({username: username}, function (err, user) {
-    if (err) {
-      return done(err)
-    } else if (!user) {
-      return done(null, false)
-    } else {
-      var cryptoPassword = scrypt(
-        password,
-        config.scrypt.salt,
-        config.scrypt.N,
-        config.scrypt.r,
-        config.scrypt.p,
-        config.scrypt.lenBytes
-      ).toString('hex')
-
-      if (user.password === cryptoPassword) {
-        return done(null, user)
-      }
-      return done(null, false)
-    }
-  })
-}))
-
-passport.serializeUser(function (user, done) {
-  done(null, user.username)
-})
-
-passport.deserializeUser(function(username, done) {
-  var db = database.get()
-  db.collection('User').findOne({username: username}, function (err, user) {
-    done(err, user)
-  })
-})
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

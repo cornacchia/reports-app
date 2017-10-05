@@ -1,5 +1,5 @@
 var express = require('express')
-var passport = require('passport')
+var passport = require('../bin/passport')
 var router = express.Router()
 
 /* Attempt login */
