@@ -1,6 +1,8 @@
 var express = require('express');
 var expressSession = require('express-session')
 var passport = require('./bin/passport')
+var ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn
+var ensureAdmin = require('./bin/ensureAdmin')
 var database = require('./bin/db')
 var path = require('path');
 var logger = require('morgan');
@@ -11,7 +13,6 @@ var config = require('./config')
 var index = require('./routes/index')
 var admin = require('./routes/admin')
 var login = require('./routes/login')
-var user = require('./routes/user')
 
 var app = express();
 
@@ -29,9 +30,8 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 app.use('/', index)
-app.use('/admin', admin)
+app.use('/admin', ensureLoggedIn('/'), ensureAdmin, admin)
 app.use('/login', login)
-app.use('/user', user)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
