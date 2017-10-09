@@ -15,7 +15,7 @@ router.get('/userList', function(req, res, next) {
   db.collection('User').find({}).toArray(function (err, users) {
     if (err) {
       console.error(err)
-      return res.serverError()
+      return res.status(500).send('Error')
     }
 
     return res.render('userList', { title: 'Lista utenti', users: users })
@@ -36,24 +36,34 @@ router.post('/register', function(req, res, next) {
     password: cryptoPassword
   }
 
-  db.collection('User').insertOne(newUser, function (err) {
+  db.collection('User').findOne({username: newUser.username}, function (err, user) {
     if (err) {
       console.error(err)
-      return res.serverError()
+      return res.status(500).send('Error')
     }
-
-    return res.redirect('/admin/userList')
+    if (user) {
+      console.error('Duplicate username registration error')
+      return res.status(500).send('Error')
+    }
+    db.collection('User').insertOne(newUser, function (err) {
+      if (err) {
+        console.error(err)
+        return res.status(500).send('Error')
+      }
+  
+      return res.redirect('/admin/userList')
+    })
   })
 })
 
 /* Delete existing user */
 router.post('/deleteUser', function (req, res, next) {
   var db = database.get()
-  console.log(req.body)
+
   db.collection('User').deleteOne({username: req.body.username}, function (err) {
     if (err) {
       console.error(err)
-      return res.serverError()
+      return res.status(500).send('Error')
     }
 
     return res.redirect('/admin/userList')
