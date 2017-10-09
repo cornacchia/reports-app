@@ -8,6 +8,7 @@ router.get('/register', function(req, res, next) {
   res.render('register-user', { title: 'Registra nuovo utente' })
 })
 
+/* Show user list page */
 router.get('/userList', function(req, res, next) {
   var db = database.get()
 
@@ -41,9 +42,22 @@ router.post('/register', function(req, res, next) {
       return res.serverError()
     }
 
-    return res.redirext('/admin/userList')
+    return res.redirect('/admin/userList')
   })
+})
 
+/* Delete existing user */
+router.post('/deleteUser', function (req, res, next) {
+  var db = database.get()
+  console.log(req.body)
+  db.collection('User').deleteOne({username: req.body.username}, function (err) {
+    if (err) {
+      console.error(err)
+      return res.serverError()
+    }
+
+    return res.redirect('/admin/userList')
+  })
 })
 
 module.exports = router

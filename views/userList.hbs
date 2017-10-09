@@ -1,0 +1,25 @@
+<table>
+  <thead>
+    <tr>
+      <th>Nome</th>
+      <th>Cognome</th>
+      <th>Username</th>
+      <th>Elimina</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each users as |user|}}
+    <tr>
+      <td>{{user.firstName}}</td>
+      <td>{{user.lastName}}</td>
+      <td>{{user.username}}</td>
+      <td>
+        <form action="/admin/deleteUser" method="post">
+          <input name="username" value="{{user.username}}" hidden />
+          <button>Elimina</button>
+        </form>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
