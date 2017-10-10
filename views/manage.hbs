@@ -1,0 +1,65 @@
+<table>
+  <thead>
+    <title>Veicoli</title>
+    <tr>
+      <td>Targa</td>
+      <td>Descrizione</td>
+      <td>Elimina</td>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each elements.vehicle as |vehicle|}}
+      <tr>
+        <td>{{vehicle.plaque}}</td>
+        <td>{{vehicle.description}}</td>
+        <td>
+          <form action="/admin/deleteMiscObject" method="post">
+            <input name="id" value={{vehicle._id}} hidden />
+            <button>Elimina</button>
+          </form>
+        </td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>
+<form action="/admin/addMiscObject" method="post">
+  <label for="plaque">Targa</label>
+  <input id="plaque" name="plaque" type="text" />
+  <label for="description">Descrizione</label>
+  <input id="description" name="description" type="text" />
+  <input name="category" value="vehicle" hidden />
+  <button>Invia</button>
+</form>
+
+<table>
+  <thead>
+    <title>Siti</title>
+    <tr>
+      <td>Codice</td>
+      <td>Nome</td>
+      <td>Elimina</td>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each elements.site as |site|}}
+      <tr>
+        <td>{{site.code}}</td>
+        <td>{{site.description}}</td>
+        <td>
+          <form action="/admin/removeMiscObject" method="post">
+            <input name="id" value={{site._id}} hidden />
+            <button>Elimina</button>
+          </form>
+        </td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>
+<form action="/admin/addMiscObject" method="post">
+  <label for="code">Codice</label>
+  <input id="code" name="code" type="text" />
+  <label for="name">Nome</label>
+  <input id="name" name="name" type="text" />
+  <input name="category" value="site" hidden />
+  <button>Invia</button>
+</form>

@@ -1,4 +1,5 @@
 var express = require('express')
+var ObjectId = require('mongodb').ObjectID
 var database = require('../bin/db')
 var encrypt = require('../bin/encrypt')
 var router = express.Router()
@@ -19,6 +20,22 @@ router.get('/userList', function(req, res, next) {
     }
 
     return res.render('userList', { title: 'Lista utenti', users: users })
+  })
+})
+
+/* Show admin management page */
+router.get('/manage', function (req, res, next) {
+  var db = database.get()
+
+  db.collection('Misc').find({}).toArray(function (err, result) {
+    var elements = {
+      'vehicle': [],
+      'site': []
+    }
+    for (var i in result) {
+      elements[result[i].category].push(result[i])
+    }
+    return res.render('manage', { title: '', elements: elements })
   })
 })
 
@@ -50,7 +67,7 @@ router.post('/register', function(req, res, next) {
         console.error(err)
         return res.status(500).send('Error')
       }
-  
+
       return res.redirect('/admin/userList')
     })
   })
@@ -67,6 +84,47 @@ router.post('/deleteUser', function (req, res, next) {
     }
 
     return res.redirect('/admin/userList')
+  })
+})
+
+/* Add Misc collection object */
+router.post('/addMiscObject', function (req, res, next) {
+  var db = database.get()
+
+  var newObject = {}
+  if (req.body.category === 'vehicle') {
+    newObject = {
+      plaque: req.body.plaque,
+      description: req.body.description,
+      category: 'vehicle'
+    }
+  } else if (req.body.category === 'site') {
+    newObject = {
+      code: req.body.code,
+      name: req.body.name,
+      category: 'site'
+    }
+  }
+  db.collection('Misc').insertOne(newObject, function (err) {
+    if (err) {
+      console.error(err)
+      return res.status(500).send('Error')
+    }
+
+    res.redirect('/admin/manage')
+  })
+})
+
+/* Remove Misc collection object */
+router.post('/removeMiscObject', function (req, res, next) {
+  var db = database.get()
+  db.collection('Misc').deleteOne({_id: new ObjectId(req.body.id)}, function (err) {
+    if (err) {
+      console.error(err)
+      return res.status(500).send('Error')
+    }
+
+    res.redirect('/admin/manage')
   })
 })
 
