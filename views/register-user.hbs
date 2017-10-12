@@ -1,22 +1,35 @@
-<form action="/admin/register" method="post">
+<form action="/admin/register" method="post" class="smallForm">
 
-  <label for="firstName">Nome</label>
-  <input id="firstName" name="firstName" type="text" />
+  <div class="form-row">
+    <label for="firstName">Nome</label>
+    <input id="firstName" name="firstName" type="text" />
+  </div>
 
-  <label for="lastName">Cognome</label>
-  <input id="lastName" name="lastName" type="text" />
+  <div class="form-row">
+    <label for="lastName">Cognome</label>
+    <input id="lastName" name="lastName" type="text" />
+  </div>
 
-  <label for="type">Tipologia</label>
-  <select id="type" name="type">
-    <option value="user">Utente normale</option>
-    <option value="admin">Amministratore</option>
-  </select>
+  <div class="form-row">
+    <label for="type">Tipologia</label>
+    <select id="type" name="type">
+      <option value="user">Utente normale</option>
+      <option value="admin">Amministratore</option>
+    </select>
+  </div>
 
-  <label for="username">Nome utente</label>
-  <input id="username" name="username" type="text" />
+  <div class="form-row">
+    <label for="username">Nome utente</label>
+    <input id="username" name="username" type="text" />
+  </div>
 
-  <label for="password">Password</label>
-  <input id="password" name="password" type="text" />
+  <div class="form-row">
+    <label for="password">Password</label>
+    <input id="password" name="password" type="text" />
+  </div>
 
-  <button>Invia</button>
+  <div class="form-row">
+    <button>Invia</button>
+  </div>
+
 </form>
