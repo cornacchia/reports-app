@@ -35,7 +35,7 @@ router.get('/manage', function (req, res, next) {
     for (var i in result) {
       elements[result[i].category].push(result[i])
     }
-    return res.render('manage', { title: '', elements: elements })
+    return res.render('manage', { title: 'Amministrazione database', elements: elements })
   })
 })
 
