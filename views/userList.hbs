@@ -11,6 +11,7 @@
       <th>Nome</th>
       <th>Cognome</th>
       <th>Username</th>
+      <th>Tipologia</th>
       <th>Elimina</th>
     </tr>
   </thead>
@@ -20,6 +21,7 @@
       <td>{{user.firstName}}</td>
       <td>{{user.lastName}}</td>
       <td>{{user.username}}</td>
+      <td>{{user.type}}</td>
       <td>
         <form action="/admin/deleteUser" method="post">
           <input name="username" value="{{user.username}}" hidden />
