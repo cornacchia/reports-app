@@ -74,3 +74,34 @@ table {
   border-collapse: collapse;
   width: 70%;
 }
+
+.navbar {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background-color: #333333;
+  height: 47px;
+}
+
+.navbar > li {
+  float: left;
+}
+
+.navbar > li.logout {
+  float: right;
+}
+
+.navbar > li > a {
+  display: block;
+  padding: 14px 16px;
+  background-color: #333333;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+}
+
+.navbar > li > a:hover,
+.navbar > li > a.active {
+  background-color: #6d6d6d;
+}
