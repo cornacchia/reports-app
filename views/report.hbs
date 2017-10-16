@@ -1,38 +1,80 @@
+<ul class="navbar">
+  <li class="logout"><a href="/logout">Logout</a></li>
+</ul>
+
 <form action="user/report" method="post">
-  <label for="date">Data</label>
-  <input id="date" name="date" type="date" />
-  <label for="time">Tempo</label>
-  <input id="time" name="time" type="text" />
-  <label for="site">Sito</label>
-  <select id="site" name="site">
-    {{#each elements.site as |site|}}
-      <option value="{{site.code}}">{{site.code}} {{site.name}}</option>
-    {{/each}}
-  </select>
-  <label for="workStarted">Partenza</label>
-  <input id="workStarted" name="workStarted" type="time" />
-  <label for="workPaused">Pausa pranzo</label>
-  <input id="workPaused" name="workPaused" type="time" />
-  <label for="workStopped">Arrivo</label>
-  <input id="workStopped" name="workStarted" type="time" />
-  <label for="travelTime">Ore di viaggio</label>
-  <input id="travelTime" name="travelTime" type="time" />
-  <label for="workHours">Ore di lavoro</label>
-  <input id="workHours" name="workHours" type="time" />
-  <label for="vehicles">Automezzi di trasporto</label>
-  <select id="vehicles" name="vehicles">
-    {{#each elements.vehicle as |vehicle|}}
-      <option value="{{vehicle.plaque}}">{{vehicle.plaque}} {{vehicle.description}}</option>
-    {{/each}}
-  </select>
-  <label for="vehicleKm">Kilometri percorsi</label>
-  <input id="vehicleKm" name="vehicleKm" type="text" />
-  <label for="highwayEnter">Entrata in autostrada</label>
-  <input id="heighwayEnter" name="highwayEnter" type="time" />
-  <label for="highwayExit">Uscita dall'autostrada</label>
-  <input id="heighwayExit" name="highwayExit" type="time" />
-  <label for="workDescription">Lavori eseguiti</label>
-  <input id="workDescription" name="workDescription" type="textarea" />
-  <label for="notes">Note</label>
-  <input id="notes" name="notes" type="textarea" />
+
+  <div class="form-row">
+    <label for="time">Tempo</label>
+    <input id="time" name="time" type="text" />
+  </div>
+
+  <div class="form-row">
+    <label for="site">Sito</label>
+    <select id="site" name="site">
+      {{#each elements.site as |site|}}
+        <option value="{{site.code}}">{{site.code}} {{site.name}}</option>
+      {{/each}}
+    </select>
+  </div>
+
+  <div class="form-row">
+    <label for="workStarted">Partenza</label>
+    <input id="workStarted" name="workStarted" type="time" />
+  </div>
+
+  <div class="form-row">
+    <label for="workPaused">Pausa pranzo</label>
+    <input id="workPaused" name="workPaused" type="time" />
+  </div>
+
+  <div class="form-row">
+    <label for="workStopped">Arrivo</label>
+    <input id="workStopped" name="workStarted" type="time" />
+  </div>
+
+  <div class="form-row">
+    <label for="travelTime">Ore di viaggio</label>
+    <input id="travelTime" name="travelTime" type="time" />
+  </div>
+
+  <div class="form-row">
+    <label for="workHours">Ore di lavoro</label>
+    <input id="workHours" name="workHours" type="time" />
+  </div>
+
+  <div class="form-row">
+    <label for="vehicles">Automezzo di trasporto</label>
+    <select id="vehicles" name="vehicles">
+      {{#each elements.vehicle as |vehicle|}}
+        <option value="{{vehicle.plaque}}">{{vehicle.plaque}} {{vehicle.description}}</option>
+      {{/each}}
+    </select>
+  </div>
+
+  <div class="form-row">
+    <label for="vehicleKm">Kilometri percorsi</label>
+    <input id="vehicleKm" name="vehicleKm" type="text" />
+  </div>
+
+  <div class="form-row">
+    <label for="highwayEnter">Entrata in autostrada</label>
+    <input id="heighwayEnter" name="highwayEnter" type="time" />
+  </div>
+
+  <div class="form-row">
+    <label for="highwayExit">Uscita dall'autostrada</label>
+    <input id="heighwayExit" name="highwayExit" type="time" />
+  </div>
+
+  <div class="form-row">
+    <label for="workDescription">Lavori eseguiti</label>
+    <textarea id="workDescription" name="workDescription"></textarea>
+  </div>
+
+  <div class="form-row">
+    <label for="notes">Note</label>
+    <textarea id="notes" name="notes"></textarea>
+  </div>
+
 </form>

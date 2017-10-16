@@ -1,4 +1,5 @@
 var express = require('express')
+var database = require('../bin/db')
 var router = express.Router()
 
 /* GET user home page. */
