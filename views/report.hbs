@@ -18,29 +18,72 @@
     </select>
   </div>
 
-  <div class="form-row">
-    <label for="workStarted">Partenza</label>
-    <input id="workStarted" name="workStarted" type="time" />
+  <label class="form-title">Giornata lavorativa</label>
+
+  <label for="workStarted">Inizio</label>
+  <div id="workStarted" class="row">
+    <label for="workStartedHour"></label>
+    <select id="workStartedHour" name="workStartedHour">
+      {{#each dayHours as |hour|}}
+        <option value="{{hour.value}}" {{#if hour.defaultStart}}selected{{/if}}>{{hour.text}}</option>
+      {{/each}}
+    </select>
+    <label for="workStartedMinutes"></label>
+    <select id="workStartedMinutes" name="workStartedMinutes">
+    {{#each minutes as |minute|}}
+      <option value="{{minute.value}}" {{#if minute.default}}selected{{/if}}>{{minute.text}}</option>
+    {{/each}}
+    </select>
   </div>
 
-  <div class="form-row">
-    <label for="workPaused">Pausa pranzo</label>
-    <input id="workPaused" name="workPaused" type="time" />
+  <label for="workStarted">Pausa pranzo</label>
+  <div id="workPaused" class="row">
+    <label for="workPausedHour"></label>
+    <select id="workPausedHour" name="workPausedHour">
+      {{#each dayHours as |hour|}}
+        <option value="{{hour.value}}" {{#if hour.defaultPause}}selected{{/if}}>{{hour.text}}</option>
+      {{/each}}
+    </select>
+    <label for="workPausedMinutes"></label>
+    <select id="workPausedMinutes" name="workPausedMinutes">
+    {{#each minutes as |minute|}}
+      <option value="{{minute.value}}" {{#if minute.default}}selected{{/if}}>{{minute.text}}</option>
+    {{/each}}
+    </select>
   </div>
 
-  <div class="form-row">
-    <label for="workStopped">Arrivo</label>
-    <input id="workStopped" name="workStarted" type="time" />
+  <label for="workStopped">Arrivo</label>
+  <div id="workStopped" class="row">
+    <label for="workStoppedHour"></label>
+    <select id="workStoppedHour" name="workStoppedHour">
+      {{#each dayHours as |hour|}}
+        <option value="{{hour.value}}" {{#if hour.defaultStop}}selected{{/if}}>{{hour.text}}</option>
+      {{/each}}
+    </select>
+    <label for="workStoppedMinutes"></label>
+    <select id="workStoppedMinutes" name="workStoppedMinutes">
+    {{#each minutes as |minute|}}
+      <option value="{{minute.value}}" {{#if minute.default}}selected{{/if}}>{{minute.text}}</option>
+    {{/each}}
+    </select>
   </div>
 
   <div class="form-row">
     <label for="travelTime">Ore di viaggio</label>
-    <input id="travelTime" name="travelTime" type="time" />
+    <select id="travelTime" name="travelTime">
+      {{#each durationHours as |hour|}}
+        <option value="{{hour.value}}" {{#if hour.default}}selected{{/if}}>{{hour.text}}</option>
+      {{/each}}
+    </select>
   </div>
 
   <div class="form-row">
     <label for="workHours">Ore di lavoro</label>
-    <input id="workHours" name="workHours" type="time" />
+    <select id="workHours" name="workHours">
+      {{#each durationHours as |hour|}}
+        <option value="{{hour.value}}" {{#if hour.default}}selected{{/if}}>{{hour.text}}</option>
+      {{/each}}
+    </select>
   </div>
 
   <div class="form-row">
@@ -57,14 +100,36 @@
     <input id="vehicleKm" name="vehicleKm" type="text" />
   </div>
 
-  <div class="form-row">
-    <label for="highwayEnter">Entrata in autostrada</label>
-    <input id="heighwayEnter" name="highwayEnter" type="time" />
+  <label for="highwayEnter">Entrata in autostrada</label>
+  <div id="highwayEnter" class="row">
+    <label for="highwayEnterHour"></label>
+    <select id="highwayEnterHour" name="highwayEnterHour">
+      {{#each dayHours as |hour|}}
+        <option value="{{hour.value}}">{{hour.text}}</option>
+      {{/each}}
+    </select>
+    <label for="highwayEnterMinutes"></label>
+    <select id="highwayEnterMinutes" name="highwayEnterMinutes">
+    {{#each minutes as |minute|}}
+      <option value="{{minute.value}}" {{#if minute.default}}selected{{/if}}>{{minute.text}}</option>
+    {{/each}}
+    </select>
   </div>
 
-  <div class="form-row">
-    <label for="highwayExit">Uscita dall'autostrada</label>
-    <input id="heighwayExit" name="highwayExit" type="time" />
+  <label for="highwayExit">Uscita dall'autostrada</label>
+  <div id="highwayExit" class="row">
+    <label for="highwayExitHour"></label>
+    <select id="highwayExitHour" name="highwayExitHour">
+      {{#each dayHours as |hour|}}
+        <option value="{{hour.value}}">{{hour.text}}</option>
+      {{/each}}
+    </select>
+    <label for="highwayExitMinutes"></label>
+    <select id="highwayExitMinutes" name="highwayExitMinutes">
+    {{#each minutes as |minute|}}
+      <option value="{{minute.value}}" {{#if minute.default}}selected{{/if}}>{{minute.text}}</option>
+    {{/each}}
+    </select>
   </div>
 
   <div class="form-row">
