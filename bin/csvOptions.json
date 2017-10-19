@@ -1,0 +1,41 @@
+{
+  "fields": [
+    {
+      "name": "site",
+      "label": "site"
+    },
+    {
+      "name": "user",
+      "label": "user"
+    },
+    {
+      "name": "workStarted",
+      "label": "workStarted"
+    },
+    {
+      "name": "workPaused",
+      "label": "workPaused"
+    },
+    {
+      "name": "workStopped",
+      "label": "workStopped"
+    },
+    {
+      "name": "travelTime",
+      "label": "travelTime"
+    },
+    {
+      "name": "workHours",
+      "label": "workHours"
+    },
+    {
+      "name": "vehicle",
+      "label": "vehicle"
+    },
+    {
+      "name": "vehicleKm",
+      "label": "vehicleKm"
+    }
+  ],
+  "fieldSeparator": ","
+}

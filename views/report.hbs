@@ -87,8 +87,8 @@
   </div>
 
   <div class="form-row">
-    <label for="vehicles">Automezzo di trasporto</label>
-    <select id="vehicles" name="vehicles">
+    <label for="vehicle">Automezzo di trasporto</label>
+    <select id="vehicle" name="vehicle">
       {{#each elements.vehicle as |vehicle|}}
         <option value="{{vehicle.plaque}}">{{vehicle.plaque}} {{vehicle.description}}</option>
       {{/each}}
@@ -142,4 +142,7 @@
     <textarea id="notes" name="notes"></textarea>
   </div>
 
+  <div class="form-row bottomRight">
+    <button>Invia</button>
+  </div>
 </form>

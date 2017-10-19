@@ -1,0 +1,32 @@
+<ul class="navbar">
+  <li><a href="/admin/userList">Lista utenti</a></li>
+  <li><a class="active" href="/admin/reportsList">Lista rapportini</a></li>
+  <li><a href="/admin/manage">Amministra database</a></li>
+  <li><a href="/admin/register">Registra utente</a></li>
+  <li class="logout"><a href="/logout">Logout</a></li>
+</ul>
+
+<div class="row">
+  <form action="/admin/exportCsv" method="get">
+    <button class="pull-right">Esporta csv</button>
+  </form>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Utente</th>
+      <th>Data</th>
+      <th>Sito</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each elements as |element|}}
+      <tr>
+        <td>{{element.user}}</td>
+        <td>{{element.date}}</td>
+        <td>{{element.site}}</td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>

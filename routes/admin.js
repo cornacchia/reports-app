@@ -1,7 +1,12 @@
 var express = require('express')
+var fs = require('fs')
+const path = require('path')
 var ObjectId = require('mongodb').ObjectID
+var jsonCsv = require('json-csv')
+var csvOptions = require('../bin/csvOptions')
 var database = require('../bin/db')
 var encrypt = require('../bin/encrypt')
+var config = require('../config')
 var router = express.Router()
 
 /* Show user registration page */
@@ -36,6 +41,15 @@ router.get('/manage', function (req, res, next) {
       elements[result[i].category].push(result[i])
     }
     return res.render('manage', { title: 'Amministrazione database', elements: elements })
+  })
+})
+
+/* Get reports list */
+router.get('/reportsList', function (req, res, next) {
+  var db = database.get()
+
+  db.collection('Reports').find({}).toArray(function (err, reports) {
+    return res.render('reportsList', { title: 'Lista rapportini', elements: reports})
   })
 })
 
@@ -125,6 +139,38 @@ router.post('/removeMiscObject', function (req, res, next) {
     }
 
     res.redirect('/admin/manage')
+  })
+})
+
+/* Export reports csv */
+router.get('/exportCsv', function (req, res, next) {
+  var db = database.get()
+  db.collection('Reports').find({})
+  .toArray(function (err, reports) {
+    if (err) {
+      console.error(err)
+      return res.status(500).send('Error')
+    }
+
+    var options = csvOptions
+
+    jsonCsv.csvBuffered(reports, options, function (err, csv) {
+      if (err) {
+        console.error(err)
+        return res.status(500).send('Error')
+      }
+
+      var csvName = Date.now() + '.csv'
+
+      fs.writeFile(path.join(config.csvFolderPath, csvName), csv, function (err) {
+        if (err) {
+          console.error(err)
+          return res.status(500).send('Error')
+        }
+
+        return res.redirect('/admin/reportsList')
+      })
+    })
   })
 })
 
