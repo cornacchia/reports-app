@@ -6,6 +6,7 @@ var jsonCsv = require('json-csv')
 var csvOptions = require('../bin/csvOptions')
 var database = require('../bin/db')
 var encrypt = require('../bin/encrypt')
+var utils = require('../bin/utils')
 var config = require('../config')
 var router = express.Router()
 
@@ -49,7 +50,18 @@ router.get('/reportsList', function (req, res, next) {
   var db = database.get()
 
   db.collection('Reports').find({}).toArray(function (err, reports) {
-    return res.render('reportsList', { title: 'Lista rapportini', elements: reports})
+    var dates = ['date']
+    var hours = ['workStarted', 'workPaused', 'workStopped']
+    var elements = reports.map(function (el) {
+      el.date = utils.formatDate(el.date)
+      el.workStarted = utils.formatHours(el.workStarted)
+      el.workPaused = utils.formatHours(el.workPaused)
+      el.workStopped = utils.formatHours(el.workStopped)
+
+      return el
+    })
+
+    return res.render('reportsList', { title: 'Lista rapportini', elements: elements})
   })
 })
 

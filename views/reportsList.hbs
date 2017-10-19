@@ -18,6 +18,13 @@
       <th>Utente</th>
       <th>Data</th>
       <th>Sito</th>
+      <th>Inizio lavoro</th>
+      <th>Pausa pranzo</th>
+      <th>Fine lavoro</th>
+      <th>Ore di viaggio</th>
+      <th>Ore di lavoro</th>
+      <th>Veicolo</th>
+      <th>Kilometri percorsi</th>
     </tr>
   </thead>
   <tbody>
@@ -26,6 +33,13 @@
         <td>{{element.user}}</td>
         <td>{{element.date}}</td>
         <td>{{element.site}}</td>
+        <td>{{element.workStarted}}</td>
+        <td>{{element.workPaused}}</td>
+        <td>{{element.workStopped}}</td>
+        <td>{{element.travelTime}}</td>
+        <td>{{element.workHours}}</td>
+        <td>{{element.vehicle}}</td>
+        <td>{{element.vehicleKm}}</td>
       </tr>
     {{/each}}
   </tbody>
