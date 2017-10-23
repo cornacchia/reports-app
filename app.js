@@ -8,6 +8,7 @@ var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var cors = require('cors')
 var config = require('./config')
 
 var index = require('./routes/index')
@@ -30,6 +31,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(expressSession({secret: config.secret, resave: false, saveUninitialized: false}))
 app.use(passport.initialize())
 app.use(passport.session())
+
+app.use(cors())
 
 app.use('/', index)
 app.use('/admin', ensureLoggedIn('/'), ensureAdmin, admin)
