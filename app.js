@@ -16,6 +16,7 @@ var admin = require('./routes/admin')
 var login = require('./routes/login')
 var logout = require('./routes/logout')
 var user = require('./routes/user')
+var mobile = require('./routes/mobile')
 
 var app = express();
 
@@ -37,6 +38,7 @@ app.use(cors())
 app.use('/', index)
 app.use('/admin', ensureLoggedIn('/'), ensureAdmin, admin)
 app.use('/user', ensureLoggedIn('/'), user)
+app.use('/mobile', mobile)
 app.use('/login', login)
 app.use('/logout', logout)
 
