@@ -25,7 +25,7 @@ router.post('/login', (req, res) => {
       const payload = { username: user.username }
       const token = jwt.sign(payload, config.mobile.secret, { expiresIn: TOKEN_EXPIRE })
 
-      res.status(200).send({authToken: token, username: user.username})
+      res.status(200).send({authToken: token, username: user.username, firstName: user.firstName, lastName: user.lastName})
 
     })
   }
