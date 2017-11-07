@@ -9,7 +9,6 @@ function verifyPassword (username, password, done) {
     } else if (!user) {
       return done(null, false)
     } else {
-      console.log('found user', user)
       var cryptoPassword = encrypt(password)
 
       if (user.password === cryptoPassword) {

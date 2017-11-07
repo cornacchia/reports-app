@@ -1,5 +1,7 @@
 var express = require('express');
 var expressSession = require('express-session')
+var methodOverride = require('method-override')
+const busboy = require('connect-busboy')
 var passport = require('./bin/passport')
 var ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn
 var ensureAdmin = require('./bin/ensureAdmin')
@@ -32,6 +34,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(expressSession({secret: config.secret, resave: false, saveUninitialized: false}))
 app.use(passport.initialize())
 app.use(passport.session())
+app.use(methodOverride())
+app.use(busboy())
 
 app.use(cors())
 

@@ -1,5 +1,8 @@
 var express = require('express')
+const path = require('path')
+const fs = require('fs')
 const jwt = require('jsonwebtoken')
+const busboy = require('connect-busboy')
 var database = require('../bin/db')
 var verify = require('../bin/verifyPassword')
 const mobileLoggedIn = require('../bin/mobileLoggedIn')
@@ -22,7 +25,7 @@ router.post('/login', (req, res) => {
       const payload = { username: user.username }
       const token = jwt.sign(payload, config.mobile.secret, { expiresIn: TOKEN_EXPIRE })
 
-      res.status(200).send(token)
+      res.status(200).send({authToken: token, username: user.username})
 
     })
   }
@@ -48,4 +51,43 @@ mobileLoggedIn,
     return res.send(elements)
   })
 })
+
+/* Post new report */
+router.post('/report',
+mobileLoggedIn,
+(req, res) => {
+  console.log(req.body.report)
+  return res.status(200).send()
+})
+
+/* Post new audio */
+router.post('/audio',
+mobileLoggedIn,
+(req, res) => {
+  req.pipe(req.busboy)
+  req.busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
+    console.log('saving file', filename)
+    const saveTo = path.join(config.audioFolderPath, filename)
+    file.pipe(fs.createWriteStream(saveTo))
+  });
+  req.busboy.on('finish', function() {
+    res.status(200).send()
+  })
+})
+
+/* Post new picture */
+router.post('/picture',
+mobileLoggedIn,
+(req, res) => {
+  req.pipe(req.busboy)
+  req.busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
+    console.log('saving file', filename)
+    const saveTo = path.join(config.pictureFolderPath, filename)
+    file.pipe(fs.createWriteStream(saveTo))
+  });
+  req.busboy.on('finish', function() {
+    res.status(200).send()
+  })
+})
+
 module.exports = router
