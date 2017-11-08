@@ -94,6 +94,7 @@ mobileLoggedIn,
   const generalData = {
     user: req.headers.username,
     site: req.headers.site,
+    date: new Date(),
     meteo: req.body.meteo,
     workStarted: new Date(req.body.workStarted),
     workPaused: new Date(req.body.workPaused),
@@ -121,6 +122,7 @@ mobileLoggedIn,
   let vehicleData = {
     user: req.headers.username,
     site: req.headers.site,
+    date: new Date(),
     vehicle: req.body.vehicle,
     vehicleKm: req.body.vehicleKm,
   }
@@ -187,6 +189,7 @@ mobileLoggedIn,
     const audioData = {
       user: req.headers.username,
       site: req.headers.site,
+      date: new Date(),
       file: saveTo
     }
     db.collection('audio').insertOne(audioData, err => {
@@ -210,13 +213,14 @@ mobileLoggedIn,
 
   req.pipe(req.busboy)
   req.busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
-    const saveTo = path.join(config.pictureFolderPath, req.headers.site, filename)
+    saveTo = path.join(config.pictureFolderPath, req.headers.site, filename)
     file.pipe(fs.createWriteStream(saveTo))
   })
   req.busboy.on('finish', () => {
     const pictureData = {
       user: req.headers.username,
       site: req.headers.site,
+      date: new Date(),
       file: saveTo
     }
 
