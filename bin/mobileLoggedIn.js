@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 const config = require('../config')
 
 function mobileLoggedIn (req, res, next) {
-  const token = req.body.token || req.headers.token
+  const token = req.headers.token
 
   if (token) {
     jwt.verify(token, config.mobile.secret, (err, user) => {
