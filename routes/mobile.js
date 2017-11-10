@@ -7,6 +7,7 @@ const busboy = require('connect-busboy')
 var database = require('../bin/db')
 var verify = require('../bin/verifyPassword')
 const mobileLoggedIn = require('../bin/mobileLoggedIn')
+const dateToString = require('../bin/dateToString')
 const ensureDirExistence = require('../bin/ensureDirExistence')
 const config = require('../config')
 var router = express.Router()
@@ -177,11 +178,14 @@ mobileLoggedIn,
   const db = database.get()
   let saveTo = ''
 
-  ensureDirExistence(path.join(config.audioFolderPath, req.headers.site))
+  const siteFolder = path.join(config.audioFolderPath, req.headers.site)
+  const siteDateFolder = path.join(siteFolder, dateToString(new Date()))
+  ensureDirExistence(siteFolder)
+  ensureDirExistence(siteDateFolder)
 
   req.pipe(req.busboy)
   req.busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
-    saveTo = path.join(config.audioFolderPath, req.headers.site, filename)
+    saveTo = path.join(siteDateFolder, filename)
     file.pipe(fs.createWriteStream(saveTo))
   })
 
@@ -209,11 +213,15 @@ mobileLoggedIn,
   const db = database.get()
   let saveTo = ''
 
-  ensureDirExistence(path.join(config.pictureFolderPath, req.headers.site))
+  const siteFolder = path.join(config.pictureFolderPath, req.headers.site)
+  const siteDateFolder = path.join(siteFolder, dateToString(new Date()))
+
+  ensureDirExistence(siteFolder)
+  ensureDirExistence(siteDateFolder)
 
   req.pipe(req.busboy)
   req.busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
-    saveTo = path.join(config.pictureFolderPath, req.headers.site, filename)
+    saveTo = path.join(siteDateFolder, filename)
     file.pipe(fs.createWriteStream(saveTo))
   })
   req.busboy.on('finish', () => {
