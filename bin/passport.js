@@ -6,7 +6,7 @@ var LocalStrategy = require('passport-local')
 // passport configuration
 passport.use(new LocalStrategy(function (username, password, done) {
   var db = database.get()
-  db.collection('User').findOne({username: username}, function (err, user) {
+  db.collection('user').findOne({username: username}, function (err, user) {
     if (err) {
       return done(err)
     } else if (!user) {
@@ -28,7 +28,7 @@ passport.serializeUser(function (user, done) {
 
 passport.deserializeUser(function(username, done) {
   var db = database.get()
-  db.collection('User').findOne({username: username}, function (err, user) {
+  db.collection('user').findOne({username: username}, function (err, user) {
     done(err, user)
   })
 })

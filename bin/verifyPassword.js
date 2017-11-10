@@ -3,7 +3,7 @@ var encrypt = require('./encrypt')
 
 function verifyPassword (username, password, done) {
   var db = database.get()
-  db.collection('User').findOne({username: username}, function (err, user) {
+  db.collection('user').findOne({username: username}, function (err, user) {
     if (err) {
       return done(err)
     } else if (!user) {

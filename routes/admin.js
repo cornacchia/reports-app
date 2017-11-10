@@ -19,7 +19,7 @@ router.get('/register', function(req, res, next) {
 router.get('/userList', function(req, res, next) {
   var db = database.get()
 
-  db.collection('User').find({}).toArray(function (err, users) {
+  db.collection('user').find({}).toArray(function (err, users) {
     if (err) {
       console.error(err)
       return res.status(500).send('Error')
@@ -79,7 +79,7 @@ router.post('/register', function(req, res, next) {
     password: cryptoPassword
   }
 
-  db.collection('User').findOne({username: newUser.username}, function (err, user) {
+  db.collection('user').findOne({username: newUser.username}, function (err, user) {
     if (err) {
       console.error(err)
       return res.status(500).send('Error')
@@ -88,7 +88,7 @@ router.post('/register', function(req, res, next) {
       console.error('Duplicate username registration error')
       return res.status(500).send('Error')
     }
-    db.collection('User').insertOne(newUser, function (err) {
+    db.collection('user').insertOne(newUser, function (err) {
       if (err) {
         console.error(err)
         return res.status(500).send('Error')
@@ -103,7 +103,7 @@ router.post('/register', function(req, res, next) {
 router.post('/deleteUser', function (req, res, next) {
   var db = database.get()
 
-  db.collection('User').deleteOne({username: req.body.username}, function (err) {
+  db.collection('user').deleteOne({username: req.body.username}, function (err) {
     if (err) {
       console.error(err)
       return res.status(500).send('Error')
