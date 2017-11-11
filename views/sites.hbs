@@ -1,0 +1,12 @@
+<ul class="navbar">
+  <li><a href="/admin/userList">Lista utenti</a></li>
+  <li><a href="/admin/manage">Amministra database</a></li>
+  <li><a class="active" href="/admin/sites">Siti</a></li>
+  <li class="logout"><a href="/logout">Logout</a></li>
+</ul>
+
+<ul>
+  {{#each sites as |site|}}
+    <li><a href="/admin/site?code={{site.code}}">{{site.code}} - {{site.name}}</a></li>
+  {{/each}}
+</ul>

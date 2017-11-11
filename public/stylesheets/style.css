@@ -110,3 +110,15 @@ table {
 .navbar > li > a.active {
   background-color: #6d6d6d;
 }
+
+.gallery {
+  width: 100%;
+}
+
+.gallery > li > ul > li{
+  display: inline-block;
+}
+
+ul.nostyle {
+  list-style: none;
+}

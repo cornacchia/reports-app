@@ -1,5 +1,6 @@
 var express = require('express');
 var expressSession = require('express-session')
+const hbs = require('hbs')
 var methodOverride = require('method-override')
 const busboy = require('connect-busboy')
 var passport = require('./bin/passport')
@@ -21,6 +22,10 @@ var user = require('./routes/user')
 var mobile = require('./routes/mobile')
 
 var app = express();
+
+// helpers register
+hbs.registerHelper('hourToString', require('./bin/hourToString'))
+hbs.registerHelper('dateToString', require('./bin/dateToString'))
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

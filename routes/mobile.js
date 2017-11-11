@@ -176,16 +176,20 @@ router.post('/audio',
 mobileLoggedIn,
 (req, res) => {
   const db = database.get()
+  const date = dateToString(new Date())
+  const site = req.headers.site
   let saveTo = ''
 
-  const siteFolder = path.join(config.audioFolderPath, req.headers.site)
-  const siteDateFolder = path.join(siteFolder, dateToString(new Date()))
+  const siteFolder = path.join(config.audioFolderPath, site)
+  const siteDateFolder = path.join(siteFolder, date)
   ensureDirExistence(siteFolder)
   ensureDirExistence(siteDateFolder)
+  let publicBase = path.join(config.audioPublicPath, site, date)
 
   req.pipe(req.busboy)
   req.busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
     saveTo = path.join(siteDateFolder, filename)
+    publicPath = path.join(publicBase, filename)
     file.pipe(fs.createWriteStream(saveTo))
   })
 
@@ -194,7 +198,8 @@ mobileLoggedIn,
       user: req.headers.username,
       site: req.headers.site,
       date: new Date(),
-      file: saveTo
+      file: saveTo,
+      path: publicPath
     }
     db.collection('audio').insertOne(audioData, err => {
       if (err) {
@@ -211,17 +216,21 @@ router.post('/picture',
 mobileLoggedIn,
 (req, res) => {
   const db = database.get()
+  const date = dateToString(new Date())
+  const site = req.headers.site
   let saveTo = ''
 
-  const siteFolder = path.join(config.pictureFolderPath, req.headers.site)
-  const siteDateFolder = path.join(siteFolder, dateToString(new Date()))
+  const siteFolder = path.join(config.pictureFolderPath, site)
+  const siteDateFolder = path.join(siteFolder, date)
 
   ensureDirExistence(siteFolder)
   ensureDirExistence(siteDateFolder)
+  let publicBase = path.join(config.picturePublicPath, site, date)
 
   req.pipe(req.busboy)
   req.busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
-    saveTo = path.join(siteDateFolder, filename)
+    saveTo = path.join(siteDateFolder, filename) + '.jpg'
+    publicPath = path.join(publicBase, filename) + '.jpg'
     file.pipe(fs.createWriteStream(saveTo))
   })
   req.busboy.on('finish', () => {
@@ -229,7 +238,8 @@ mobileLoggedIn,
       user: req.headers.username,
       site: req.headers.site,
       date: new Date(),
-      file: saveTo
+      file: saveTo,
+      path: publicPath
     }
 
     db.collection('picture').insertOne(pictureData, err => {

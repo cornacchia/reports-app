@@ -1,0 +1,92 @@
+<ul class="navbar">
+  <li><a href="/admin/userList">Lista utenti</a></li>
+  <li><a href="/admin/manage">Amministra database</a></li>
+  <li><a class="active" href="/admin/sites">Siti</a></li>
+  <li class="logout"><a href="/logout">Logout</a></li>
+</ul>
+
+<h1 class="row">{{element.site.code}} - {{element.site.name}}</h1>
+
+<h2 class="row">Dati generali</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Utente</th>
+      <th>Data</th>
+      <th>Inizio lavoro</th>
+      <th>Pausa pranzo</th>
+      <th>Fine lavoro</th>
+      <th>Ore di viaggio</th>
+      <th>Ore di lavoro</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each element.report as |r|}}
+      <tr>
+        <td>{{r.user}}</td>
+        <td>{{dateToString r.date}}</td>
+        <td>{{hourToString r.workStarted}}</td>
+        <td>{{hourToString r.workPaused}}</td>
+        <td>{{hourToString r.workStopped}}</td>
+        <td>{{r.travelTime}}</td>
+        <td>{{r.workHours}}</td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>
+
+<h2 class="row">Uso veicoli</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Utente</th>
+      <th>Data</th>
+      <th>Veicolo</th>
+      <th>Km percorsi</th>
+      <th>Entrata autostrada</th>
+      <th>Uscita autostrada</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each element.vehicle as |v|}}
+      <tr>
+        <td>{{v.user}}</td>
+        <td>{{dateToString v.date}}</td>
+        <td>{{v.vehicle}}</td>
+        <td>{{v.vehicleKm}}</td>
+        <td>{{v.highwayEnter}}</td>
+        <td>{{v.highwayExit}}</td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>
+
+<h2 class="row">Foto</h2>
+<ul class="gallery">
+{{#each element.picture as |p|}}
+  <li>
+    {{p.date}}
+    <ul>
+    {{#each p.data as |picture|}}
+      <li><a href="{{picture.path}}"><img width="200px" height="200px" src="{{picture.path}}" /></a></li>
+    {{/each}}
+    </ul>
+  </li>
+{{/each}}
+</ul>
+
+<h2 class="row">Audio</h2>
+<ul>
+{{#each element.audio as |a|}}
+  <li>
+    {{a.date}}
+    <ul class="nostyle">
+    {{#each a.data as |audio|}}
+      <li><audio controls><source src="{{audio.path}}"></audio></li>
+    {{/each}}
+    </ul>
+  </li>
+{{/each}}
+</ul>

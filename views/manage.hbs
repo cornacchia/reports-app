@@ -1,8 +1,7 @@
 <ul class="navbar">
   <li><a href="/admin/userList">Lista utenti</a></li>
-  <li><a href="/admin/reportsList">Lista rapportini</a></li>
   <li><a class="active" href="/admin/manage">Amministra database</a></li>
-  <li><a href="/admin/register">Registra utente</a></li>
+  <li><a href="/admin/sites">Siti</a></li>
   <li class="logout"><a href="/logout">Logout</a></li>
 </ul>
 
@@ -22,8 +21,9 @@
           <td>{{vehicle.plaque}}</td>
           <td>{{vehicle.description}}</td>
           <td>
-            <form action="/admin/deleteMiscObject" method="post">
+            <form action="/admin/removeMiscObject" method="post">
               <input name="id" value={{vehicle._id}} hidden />
+              <input name="category" value="vehicle" hidden />
               <button>Elimina</button>
             </form>
           </td>
@@ -71,6 +71,7 @@
           <td>
             <form action="/admin/removeMiscObject" method="post">
               <input name="id" value={{site._id}} hidden />
+              <input name="category" value="site" hidden />
               <button>Elimina</button>
             </form>
           </td>
