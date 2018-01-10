@@ -1,8 +1,10 @@
-var database = require('./db')
+/** Middleware to ensure that a user request comes from an admin */
+
+const database = require('./db')
 
 module.exports = function (req, res, next) {
-  var db = database.get()
-  var username = req.session.passport.user
+  const db = database.get()
+  const username = req.session.passport.user
 
   db.collection('user').findOne({username: username}, function (err, user) {
     if (err) {

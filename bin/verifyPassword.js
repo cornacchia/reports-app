@@ -1,16 +1,15 @@
-var database = require('./db')
-var encrypt = require('./encrypt')
+const database = require('./db')
+const encrypt = require('./encrypt')
 
 function verifyPassword (username, password, done) {
-  var db = database.get()
-  db.collection('user').findOne({username: username}, function (err, user) {
+  const db = database.get()
+  db.collection('user').findOne({username: username}, (err, user) => {
     if (err) {
       return done(err)
     } else if (!user) {
       return done(null, false)
     } else {
-      var cryptoPassword = encrypt(password)
-
+      const cryptoPassword = encrypt(password)
       if (user.password === cryptoPassword) {
         return done(null, user)
       }

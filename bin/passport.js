@@ -1,19 +1,21 @@
-var passport = require('passport')
-var database = require('./db')
-var encrypt = require('./encrypt')
-var LocalStrategy = require('passport-local')
+const passport = require('passport')
+const database = require('./db')
+const encrypt = require('./encrypt')
+const LocalStrategy = require('passport-local')
 
 // passport configuration
-passport.use(new LocalStrategy(function (username, password, done) {
-  var db = database.get()
-  db.collection('user').findOne({username: username}, function (err, user) {
+passport.use(new LocalStrategy((username, password, done) => {
+  const db = database.get()
+  db.collection('user').findOne({username: username}, (err, user) => {
     if (err) {
       return done(err)
     } else if (!user) {
       return done(null, false)
     } else {
-      var cryptoPassword = encrypt(password)
-
+      const cryptoPassword = encrypt(password)
+      console.log('USER', username)
+      console.log('PASSWORD', cryptoPassword)
+      console.log('DB PASSWORD', user.password)
       if (user.password === cryptoPassword) {
         return done(null, user)
       }
@@ -22,12 +24,12 @@ passport.use(new LocalStrategy(function (username, password, done) {
   })
 }))
 
-passport.serializeUser(function (user, done) {
+passport.serializeUser((user, done) => {
   done(null, user.username)
 })
 
-passport.deserializeUser(function(username, done) {
-  var db = database.get()
+passport.deserializeUser((username, done) => {
+  const db = database.get()
   db.collection('user').findOne({username: username}, function (err, user) {
     done(err, user)
   })

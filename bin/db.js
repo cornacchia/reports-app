@@ -1,7 +1,9 @@
-var MongoClient = require('mongodb').MongoClient
-var config = require('../config')
+/** Setup db connection and provides a db handler for the application */
 
-var _db
+const MongoClient = require('mongodb').MongoClient
+const config = require('../config')
+
+let _db
 
 module.exports = {
   startConnection: function (cb) {

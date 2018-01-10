@@ -1,34 +1,35 @@
-var express = require('express')
-var database = require('../bin/db')
-var selectConfig = require('../bin/selectConfig')
-var combineHours = require('../bin/combineHours')
-var router = express.Router()
+const express = require('express')
+const database = require('../bin/db')
+const selectConfig = require('../bin/selectConfig')
+const combineHours = require('../bin/combineHours')
+const router = express.Router()
 
 /* GET user home page. */
-router.get('/', function(req, res, next) {
-  var db = database.get()
+router.get('/', (req, res, next) => {
+  const db = database.get()
 
-    db.collection('Misc').find({}).toArray(function (err, result) {
-      var elements = {
-        'vehicle': [],
-        'site': []
-      }
-      for (var i in result) {
-        elements[result[i].category].push(result[i])
-      }
-      return res.render('report', {
-        title: 'Nuovo rapportino',
-        elements: elements,
-        minutes: selectConfig.minutes,
-        dayHours: selectConfig.dayHours,
-        durationHours: selectConfig.durationHours })
-    })
+  db.collection('Misc').find({}).toArray(function (err, result) {
+    let elements = {
+      'vehicle': [],
+      'site': []
+    }
+
+    for (var i in result) {
+      elements[result[i].category].push(result[i])
+    }
+    return res.render('report', {
+      title: 'Nuovo rapportino',
+      elements: elements,
+      minutes: selectConfig.minutes,
+      dayHours: selectConfig.dayHours,
+      durationHours: selectConfig.durationHours })
+  })
 })
 
-router.post('/report', function (req, res, next) {
-  var db = database.get()
+router.post('/report', (req, res, next) => {
+  const db = database.get()
 
-  var newReport = {
+  let newReport = {
     user: req.session.passport.user,
     date: new Date(),
     time: req.body.time,
@@ -46,7 +47,7 @@ router.post('/report', function (req, res, next) {
     notes: req.body.notes
   }
 
-  db.collection('Reports').insertOne(newReport, function (err) {
+  db.collection('Reports').insertOne(newReport, err => {
     if (err) {
       console.error(err)
       return res.status(500).send('Error')

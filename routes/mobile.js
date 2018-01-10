@@ -1,16 +1,16 @@
-var express = require('express')
+const express = require('express')
 const async = require('async')
 const path = require('path')
 const fs = require('fs')
 const jwt = require('jsonwebtoken')
 const busboy = require('connect-busboy')
-var database = require('../bin/db')
-var verify = require('../bin/verifyPassword')
+const database = require('../bin/db')
+const verify = require('../bin/verifyPassword')
 const mobileLoggedIn = require('../bin/mobileLoggedIn')
 const dateToString = require('../bin/dateToString')
 const ensureDirExistence = require('../bin/ensureDirExistence')
 const config = require('../config')
-var router = express.Router()
+const router = express.Router()
 
 const TOKEN_EXPIRE = 60 * 60 * 24 * 7
 

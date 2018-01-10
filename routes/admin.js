@@ -1,27 +1,27 @@
-var express = require('express')
-var fs = require('fs')
+const express = require('express')
+const fs = require('fs')
 const async = require('async')
 const path = require('path')
-var ObjectId = require('mongodb').ObjectID
-var jsonCsv = require('json-csv')
-var csvOptions = require('../bin/csvOptions')
-var database = require('../bin/db')
-var encrypt = require('../bin/encrypt')
-var utils = require('../bin/utils')
+const ObjectId = require('mongodb').ObjectID
+const jsonCsv = require('json-csv')
+const csvOptions = require('../bin/csvOptions')
+const database = require('../bin/db')
+const encrypt = require('../bin/encrypt')
+const utils = require('../bin/utils')
 const dateToString = require('../bin/dateToString')
-var config = require('../config')
-var router = express.Router()
+const config = require('../config')
+const router = express.Router()
 
 /* Show user registration page */
-router.get('/register', function(req, res, next) {
+router.get('/register', (req, res, next) => {
   res.render('register-user', { title: 'Registra nuovo utente' })
 })
 
 /* Show user list page */
-router.get('/userList', function(req, res, next) {
-  var db = database.get()
+router.get('/userList', (req, res, next) => {
+  const db = database.get()
 
-  db.collection('user').find({}).toArray(function (err, users) {
+  db.collection('user').find({}).toArray((err, users) => {
     if (err) {
       console.error(err)
       return res.status(500).send('Error')
@@ -32,9 +32,9 @@ router.get('/userList', function(req, res, next) {
 })
 
 /* Show admin management page */
-router.get('/manage', function (req, res, next) {
+router.get('/manage', (req, res, next) => {
   // TODO: factorize similar function in mobile controller
-  var db = database.get()
+  const db = database.get()
 
   async.parallel({
     site: siteCb => {
@@ -72,13 +72,13 @@ router.get('/manage', function (req, res, next) {
 })
 
 /* Get reports list */
-router.get('/reportsList', function (req, res, next) {
-  var db = database.get()
+router.get('/reportsList', (req, res, next) => {
+  const db = database.get()
 
-  db.collection('Reports').find({}).toArray(function (err, reports) {
-    var dates = ['date']
-    var hours = ['workStarted', 'workPaused', 'workStopped']
-    var elements = reports.map(function (el) {
+  db.collection('Reports').find({}).toArray((err, reports) => {
+    const dates = ['date']
+    const hours = ['workStarted', 'workPaused', 'workStopped']
+    const elements = reports.map(function (el) {
       el.date = utils.formatDate(el.date)
       el.workStarted = utils.formatHours(el.workStarted)
       el.workPaused = utils.formatHours(el.workPaused)
@@ -92,12 +92,12 @@ router.get('/reportsList', function (req, res, next) {
 })
 
 /* Register new user */
-router.post('/register', function(req, res, next) {
-  var db = database.get()
+router.post('/register', (req, res, next) => {
+  const db = database.get()
 
-  var cryptoPassword = encrypt(req.body.password)
+  const cryptoPassword = encrypt(req.body.password)
 
-  var newUser = {
+  const newUser = {
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     type: req.body.type,
@@ -105,7 +105,7 @@ router.post('/register', function(req, res, next) {
     password: cryptoPassword
   }
 
-  db.collection('user').findOne({username: newUser.username}, function (err, user) {
+  db.collection('user').findOne({username: newUser.username}, (err, user) => {
     if (err) {
       console.error(err)
       return res.status(500).send('Error')
@@ -126,10 +126,10 @@ router.post('/register', function(req, res, next) {
 })
 
 /* Delete existing user */
-router.post('/deleteUser', function (req, res, next) {
-  var db = database.get()
+router.post('/deleteUser', (req, res, next) => {
+  const db = database.get()
 
-  db.collection('user').deleteOne({username: req.body.username}, function (err) {
+  db.collection('user').deleteOne({username: req.body.username}, err => {
     if (err) {
       console.error(err)
       return res.status(500).send('Error')
@@ -140,8 +140,8 @@ router.post('/deleteUser', function (req, res, next) {
 })
 
 /* Add Misc collection object */
-router.post('/addMiscObject', function (req, res, next) {
-  var db = database.get()
+router.post('/addMiscObject', (req, res, next) => {
+  const db = database.get()
   let collection = ''
   let newObject = {}
 
@@ -171,7 +171,7 @@ router.post('/addMiscObject', function (req, res, next) {
 })
 
 /* Remove Misc collection object */
-router.post('/removeMiscObject', function (req, res, next) {
+router.post('/removeMiscObject', (req, res, next) => {
   const db = database.get()
   const category = req.body.category
   let collection = ''
@@ -317,8 +317,9 @@ router.get('/site', (req, res, next) => {
 })
 
 /* Export reports csv */
-router.get('/exportCsv', function (req, res, next) {
-  var db = database.get()
+router.get('/exportCsv', (req, res, next) => {
+  const db = database.get()
+
   db.collection('Reports').find({})
   .toArray(function (err, reports) {
     if (err) {
@@ -326,9 +327,9 @@ router.get('/exportCsv', function (req, res, next) {
       return res.status(500).send('Error')
     }
 
-    var options = csvOptions
+    const options = csvOptions
 
-    jsonCsv.csvBuffered(reports, options, function (err, csv) {
+    jsonCsv.csvBuffered(reports, options, (err, csv) => {
       if (err) {
         console.error(err)
         return res.status(500).send('Error')
@@ -336,7 +337,7 @@ router.get('/exportCsv', function (req, res, next) {
 
       var csvName = Date.now() + '.csv'
 
-      fs.writeFile(path.join(config.csvFolderPath, csvName), csv, function (err) {
+      fs.writeFile(path.join(config.csvFolderPath, csvName), csv, err => {
         if (err) {
           console.error(err)
           return res.status(500).send('Error')

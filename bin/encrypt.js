@@ -1,8 +1,10 @@
-var scrypt = require('scryptsy')
-var config = require('../config')
+/** Encrypts a string to a scrypt password */
+
+const scrypt = require('scryptsy')
+const config = require('../config')
 
 module.exports = function (password) {
-  var cryptoPassword = scrypt(
+  const cryptoPassword = scrypt(
     password,
     config.scrypt.salt,
     config.scrypt.N,

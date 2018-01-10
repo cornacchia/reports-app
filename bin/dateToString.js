@@ -1,3 +1,5 @@
+/** Converts a date into its string representation */
+
 module.exports = function dateToString(d) {
   const date = new Date(d)
 

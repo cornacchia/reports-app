@@ -1,3 +1,5 @@
+/** Middleware to check if a mobile user is logged in */
+
 const jwt = require('jsonwebtoken')
 const config = require('../config')
 
