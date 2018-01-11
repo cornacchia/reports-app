@@ -7,7 +7,7 @@ let _db
 
 module.exports = {
   startConnection: function (cb) {
-    MongoClient.connect(config.db.url, function (err, db) {
+    MongoClient.connect(config.db.url, (err, db) => {
       if (err) {
         return cb(err)
       }

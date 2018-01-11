@@ -26,5 +26,7 @@
     "scryptsy": "^2.0.0",
     "serve-favicon": "~2.4.5"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "chance": "^1.0.13"
+  }
 }
