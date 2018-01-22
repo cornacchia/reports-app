@@ -2,6 +2,7 @@
 
 const async = require('async')
 const Chance = require('chance')
+const moment = require('moment')
 const MongoClient = require('mongodb').MongoClient
 const config = require('../config')
 const chance = new Chance()
@@ -33,6 +34,8 @@ const USERS = [
     password: USERS_PASSWORD
   }
 ]
+
+const USER_FULL_NAMES = ['Ada Lovelace', 'Virginia Woolf']
 
 const SITES = [
   { code: '101', name: 'Via Mordor' },
@@ -162,27 +165,33 @@ function generateReports() {
   while (start < now) {
     let newDate = new Date(start)
     let adminReport = {
-      user: 'admin',
+      username: 'admin',
+      squad: ['Ada Lovelace'],
       site: chance.pickone(SITES).code,
-      date: newDate,
+      ts: newDate,
+      date: moment(newDate).format('D MMMM YYYY'),
       meteo: chance.pickone(METEO),
       workStarted: new Date(newDate.setHours(chance.pickone([5,6,7], chance.pickone(0, 14, 30)))),
-      workPause: chance.pickone([30, 60, 90]),
+      workPause: chance.pickone([0, 0.5, 1, 1.5]),
       workStopped: new Date(newDate.setHours(chance.pickone([18,19,20], chance.pickone(0, 14, 30)))),
       travelTime: chance.pickone([0, 1, 2]),
       notes: chance.sentence()
     }
+    if (chance.bool()) adminReport.squad.push('Virginia Woolf')
     let userReport = {
-      user: 'user',
+      username: 'user',
+      squad: ['Virginia Woolf'],
       site: chance.pickone(SITES).code,
-      date: newDate,
+      ts: newDate,
+      date: moment(newDate).format('D MMMM YYYY'),
       meteo: chance.pickone(METEO),
       workStarted: new Date(newDate.setHours(chance.pickone([5,6,7], chance.pickone(0, 14, 30)))),
-      workPause: chance.pickone([30, 60, 90]),
+      workPause: chance.pickone([0, 0.5, 1, 1.5]),
       workStopped: new Date(newDate.setHours(chance.pickone([18,19,20], chance.pickone(0, 14, 30)))),
       travelTime: chance.pickone([0, 1, 2]),
       notes: chance.sentence()
     }
+    if (chance.bool()) userReport.squad.push('Ada Lovelace')
     result.push(adminReport)
     result.push(userReport)
     start += DAY
@@ -212,9 +221,10 @@ function generateVehicles () {
 
   while (start < now) {
     let vehicle = {
-      user: chance.pickone(USERS).username,
+      username: chance.pickone(USERS).username,
       site: chance.pickone(SITES).code,
-      date: new Date(start),
+      ts: start,
+      date: moment(start).format('D MMMM YYYY'),
       vehicle: chance.pickone(VEHICLES).plaque,
       vehicleKm: chance.natural({min: 1, max: 100}),
       highwayEnter: chance.pickone(HIGHWAYS).name,

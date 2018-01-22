@@ -1,0 +1,47 @@
+<ul class="navbar">
+  <li><a class="active" href="/admin/userList">Lista utenti</a></li>
+  <li><a href="/admin/manage">Amministra database</a></li>
+  <li><a href="/admin/sites">Siti</a></li>
+  <li class="logout"><a href="/logout">Logout</a></li>
+</ul>
+
+<h1>{{data.userFullName}}</h1>
+
+{{#each data.result as |month|}}
+<div class="row">
+  <table>
+    <caption>{{month.monthYear}}</caption>
+    <thead>
+      <th>Data</th>
+      <th>Attività</th>
+      <th>Squadra</th>
+      <th>Mezzi</th>
+      <th>Inizio</th>
+      <th>Fine</th>
+      <th>Pausa</th>
+      <th>Viaggio</th>
+      <th>Ore di lavoro</th>
+    </thead>
+    <tbody>
+      {{#each month.reports as |report|}}
+        <tr>
+          <td>{{report.date}}</td>
+          <td>{{report.notes}}</td>
+          <td>{{report.squad}}</td>
+          <td>{{#each report.vehicles as |vehicle|}}{{vehicle.vehicle}}{{#unless @last}}, {{/unless}}{{/each}}</td>
+          <td>{{hourToString report.workStarted}}</td>
+          <td>{{hourToString report.workStopped}}</td>
+          <td>{{report.workPause}}</td>
+          <td>{{report.travelTime}}</td>
+          <td>{{report.totalWorkTime}}</td>
+        </tr>
+      {{/each}}
+      <tr>
+        <td colspan="6"></td>
+        <td>{{month.totalTravelTime}}</td>
+        <td>{{month.totalWorkTime}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+{{/each}}

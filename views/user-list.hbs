@@ -51,6 +51,7 @@
   <table>
     <thead>
       <tr>
+        <th>Rapporti</th>
         <th>Nome</th>
         <th>Cognome</th>
         <th>Username</th>
@@ -61,12 +62,20 @@
     <tbody>
       {{#each users as |user|}}
       <tr>
+        <td>
+          <form class="green" action="/admin/getUserReports" method="post">
+            <input name="username" value="{{user.username}}" hidden />
+            <input name="firstName" value="{{user.firstName}}" hidden />
+            <input name="lastName" value="{{user.lastName}}" hidden />
+            <button>Visualizza</button>
+          </form>
+        </td>
         <td>{{user.firstName}}</td>
         <td>{{user.lastName}}</td>
         <td>{{user.username}}</td>
         <td>{{user.type}}</td>
         <td>
-          <form action="/admin/deleteUser" method="post">
+          <form class="red" action="/admin/deleteUser" method="post">
             <input name="username" value="{{user.username}}" hidden />
             <button>Elimina</button>
           </form>

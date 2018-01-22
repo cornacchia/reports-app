@@ -2,6 +2,7 @@ const express = require('express')
 const async = require('async')
 const path = require('path')
 const fs = require('fs')
+const moment = require('moment')
 const jwt = require('jsonwebtoken')
 const busboy = require('connect-busboy')
 const database = require('../bin/db')
@@ -76,6 +77,19 @@ mobileLoggedIn,
 
         return highwayCb(null, result)
       })
+    },
+    user: userCb => {
+      db.collection('user')
+      .find({})
+      .project({_id: -1, firstName: 1, lastName: 1})
+      .toArray((err, result) => {
+        if (err) {
+          console.error('Error retrieving user data from db for mobile select', err)
+          return userCb(err)
+        }
+
+        return userCb(null, result)
+      })
     }
   }, (err, results) => {
     if (err) {
@@ -93,10 +107,12 @@ mobileLoggedIn,
 (req, res) => {
   const db = database.get()
   const generalData = {
-    user: req.headers.username,
+    username: req.headers.username,
     site: req.headers.site,
-    date: new Date(),
+    ts: new Date(),
+    date: moment().format('D MMMM YYYY'),
     meteo: req.body.meteo,
+    squad: req.body.squad,
     workStarted: new Date(req.body.workStarted),
     workPause: req.body.workPause,
     workStopped: new Date(req.body.workStopped),
@@ -121,9 +137,10 @@ mobileLoggedIn,
 (req, res) => {
   const db = database.get()
   let vehicleData = {
-    user: req.headers.username,
+    username: req.headers.username,
     site: req.headers.site,
-    date: new Date(),
+    ts: new Date(),
+    date: moment().format('D MMMM YYYY'),
     vehicle: req.body.vehicle,
     vehicleKm: req.body.vehicleKm,
   }

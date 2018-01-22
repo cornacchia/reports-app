@@ -2,6 +2,7 @@ const express = require('express')
 const fs = require('fs')
 const async = require('async')
 const path = require('path')
+const moment = require('moment')
 const ObjectId = require('mongodb').ObjectID
 const jsonCsv = require('json-csv')
 const csvOptions = require('../bin/csvOptions')
@@ -316,11 +317,145 @@ router.get('/site', (req, res, next) => {
   })
 })
 
+/* See user reports */
+router.post('/getUserReports', (req, res, next) => {
+  const db = database.get()
+
+  async.parallel({
+    user: uCb => {
+      db.collection('user').findOne({username: req.body.username}, (err, user) => {
+        if (err) {
+          console.error('Error retrieving user data', req.body.username, err)
+          return uCb(err)
+        }
+
+        return uCb(null, user.firstName + ' ' + user.lastName)
+      })
+    },
+    reports: rCb => {
+      db.collection('report').find({username: req.body.username})
+      .sort({ts: 1})
+      .toArray((err, result) => {
+        if (err) {
+          console.error('Error retrieving reports for user', req.body.username, err)
+          return rCb(err)
+        }
+
+        return rCb(null, result)
+      })
+    },
+    vehicles: vCb => {
+      db.collection('vehicle').find({username: req.body.username})
+      .sort({ts: 1})
+      .toArray((err, result) => {
+        if (err) {
+          console.error('Error retrieving vehicle informations for user', req.body.username, err)
+          return vCb(err)
+        }
+
+        return vCb(null, result)
+      })
+    }
+  }, (err, data) => {
+    if (err) {
+      return res.status(500).send('Error querying for user reports')
+    }
+
+    let result = {}
+    for (let report of data.reports) {
+      let month = moment(report.ts).format('MMMM YYYY')
+      let reportWorkTime = ((report.workStopped - report.workStarted) / 36e5) - report.workPause
+      report.totalWorkTime = reportWorkTime
+      if (result[month]) {
+        result[month]['reports'][report.date] = report
+        result[month].totalWorkTime += reportWorkTime
+        result[month].totalTravelTime += report.travelTime
+      } else {
+        result[month] = {reports: {}}
+        result[month]['reports'][report.date] = report
+        result[month].totalWorkTime = reportWorkTime
+        result[month].totalTravelTime = report.travelTime
+        result[month].monthYear = month
+      }
+    }
+
+    for (let vehicle of data.vehicles) {
+      let month = moment(vehicle.ts).format('MMMM YYYY')
+      if(result[month]) {
+        if (result[month]['reports'][vehicle.date]) {
+          if (result[month]['reports'][vehicle.date].vehicles) {
+            result[month]['reports'][vehicle.date].vehicles.push(vehicle)
+          } else {
+            result[month]['reports'][vehicle.date].vehicles = [vehicle]
+          }
+        } else {
+          result[month]['reports'][vehicle.date] = {vehicles: [vehicle]}
+        }
+      } else {
+        result[month] = {reports: {}}
+        result[month]['reports'][vehicle.date] = {vehicles: [vehicle]}
+        result[month].monthYear = month        
+      }
+    }
+
+    res.render('user-reports', { title: 'Elenco rapporti', data: {userFullName: data.user, result: result} })
+  })
+})
+
 /* Export reports csv */
 router.get('/exportCsv', (req, res, next) => {
   const db = database.get()
 
-  db.collection('Reports').find({})
+  db.collection('user').find({})
+  .project({_id: -1, username: 1, firstName: 1, lastName: 1})
+  .toArray((err, users) => {
+    if (err) {
+      console.error(err)
+      return res.status(500).send('Error')
+    }
+
+    const dbOps = []
+    for (let user of users) {
+      let pipeline = [
+        {$match: {user: user.username}},
+        {$sort: {date: 1}},
+        {$group: {
+          _id: {month: {$month: '$date'}, year: {$year: '$date'}},
+          reports: {$push: '$$ROOT'}
+        }}
+      ]
+
+      dbOps.push(cb => {
+        db.collection('report')
+        .aggregate(pipeline, (err, result) => {
+          if (err) {
+            console.error(err)
+            return cb(err)
+          }
+
+          for (let month of result) {
+            month.totalWorkTime = 0
+            month.totalTravelTime = 0
+            for (let report of month.reports) {
+              let workHours = Math.abs(report.workStarted - report.workStopped) / 36e5
+              workHours -= (report.workPause / 60)
+              month.totalWorkTime += workHours
+              month.totalTravelTime += report.travelTime
+            }
+          }
+
+          return cb(null, result)
+        })
+      })
+    }
+
+    async.series(dbOps, (err, result) => {
+
+    })
+  })
+
+
+  db.collection('report').find({})
   .toArray(function (err, reports) {
     if (err) {
       console.error(err)
