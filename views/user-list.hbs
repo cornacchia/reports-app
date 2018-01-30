@@ -1,87 +1,113 @@
-<ul class="navbar">
-  <li><a class="active" href="/admin/userList">Lista utenti</a></li>
-  <li><a href="/admin/manage">Amministra database</a></li>
-  <li><a href="/admin/sites">Siti</a></li>
-  <li class="logout"><a href="/logout">Logout</a></li>
-</ul>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link active" href="/admin/userList">Lista utenti</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/manage">Amministra database</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/sites">Siti</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/logout">Logout</a>
+      </li>
+    </ul>
+  </div>
+</nav>
 
-<h2 class='row'>Registra nuovo utente</h2>
+<div class="container">
 
-<div class="row">
-  <form action="/admin/register" method="post">
+  <div class="row justify-content-sm-center">
+    <form action="/admin/register" method="post">
+      <fieldset>
+        <legend>Registra nuovo utente</legend>
+        <div class="control-group">
+          <label class="control-label" for="firstName">Nome</label>
+          <div class="controls">
+            <input id="firstName" name="firstName" type="text" />
+          </div>
+        </div>
 
-    <div class="form-row">
-      <label for="firstName">Nome</label>
-      <input id="firstName" name="firstName" type="text" />
-    </div>
+        <div class="control-group">
+          <label class="control-label" for="lastName">Cognome</label>
+          <div class="controls">
+            <input id="lastName" name="lastName" type="text" />
+          </div>
+        </div>
 
-    <div class="form-row">
-      <label for="lastName">Cognome</label>
-      <input id="lastName" name="lastName" type="text" />
-    </div>
+        <div class="control-group">
+          <label class="control-label" for="type">Tipologia</label>
+          <div class="controls">
+            <select id="type" name="type">
+              <option value="user">Utente</option>
+              <option value="admin">Amministratore</option>
+            </select>
+          </div>
+        </div>
 
-    <div class="form-row">
-      <label for="type">Tipologia</label>
-      <select id="type" name="type">
-        <option value="user">Utente</option>
-        <option value="admin">Amministratore</option>
-      </select>
-    </div>
+        <div class="control-group">
+          <label class="control-label" for="username">Nome utente</label>
+          <div class="controls">
+            <input id="username" name="username" type="text" />
+          </div>
+        </div>
 
-    <div class="form-row">
-      <label for="username">Nome utente</label>
-      <input id="username" name="username" type="text" />
-    </div>
+        <div class="control-group">
+          <label class="control-label" for="password">Password</label>
+          <div class="controls">
+            <input id="password" name="password" type="text" />
+          </div>
+        </div>
 
-    <div class="form-row">
-      <label for="password">Password</label>
-      <input id="password" name="password" type="text" />
-    </div>
+        <button type="submit" class="btn btn-success">Invia</button>
+      </fieldset>
+    </form>
+  </div>
 
-    <div class="form-row">
-      <button>Invia</button>
-    </div>
+  <h2 class="row">Lista utenti</h2>
 
-  </form>
-</div>
+  <div class="row">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Rapporti</th>
+          <th>Nome</th>
+          <th>Cognome</th>
+          <th>Username</th>
+          <th>Tipologia</th>
+          <th>Elimina</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each users as |user|}}
+        <tr>
+          <td>
+            <form action="/admin/getUserReports" method="post">
+              <input name="username" value="{{user.username}}" hidden />
+              <input name="firstName" value="{{user.firstName}}" hidden />
+              <input name="lastName" value="{{user.lastName}}" hidden />
+              <button class="btn btn-info">Visualizza</button>
+            </form>
+          </td>
+          <td>{{user.firstName}}</td>
+          <td>{{user.lastName}}</td>
+          <td>{{user.username}}</td>
+          <td>{{user.type}}</td>
+          <td>
+            <form action="/admin/deleteUser" method="post">
+              <input name="username" value="{{user.username}}" hidden />
+              <button class="btn btn-danger">Elimina</button>
+            </form>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
 
-<h2 class="row">Lista utenti</h2>
-
-<div class="row">
-  <table>
-    <thead>
-      <tr>
-        <th>Rapporti</th>
-        <th>Nome</th>
-        <th>Cognome</th>
-        <th>Username</th>
-        <th>Tipologia</th>
-        <th>Elimina</th>
-      </tr>
-    </thead>
-    <tbody>
-      {{#each users as |user|}}
-      <tr>
-        <td>
-          <form class="green" action="/admin/getUserReports" method="post">
-            <input name="username" value="{{user.username}}" hidden />
-            <input name="firstName" value="{{user.firstName}}" hidden />
-            <input name="lastName" value="{{user.lastName}}" hidden />
-            <button>Visualizza</button>
-          </form>
-        </td>
-        <td>{{user.firstName}}</td>
-        <td>{{user.lastName}}</td>
-        <td>{{user.username}}</td>
-        <td>{{user.type}}</td>
-        <td>
-          <form class="red" action="/admin/deleteUser" method="post">
-            <input name="username" value="{{user.username}}" hidden />
-            <button>Elimina</button>
-          </form>
-        </td>
-      </tr>
-      {{/each}}
-    </tbody>
-  </table>
 </div>
