@@ -13,9 +13,6 @@ passport.use(new LocalStrategy((username, password, done) => {
       return done(null, false)
     } else {
       const cryptoPassword = encrypt(password)
-      console.log('USER', username)
-      console.log('PASSWORD', cryptoPassword)
-      console.log('DB PASSWORD', user.password)
       if (user.password === cryptoPassword) {
         return done(null, user)
       }
