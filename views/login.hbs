@@ -1,15 +1,22 @@
-<div class="centerVertical">
-  <form action="/login" method="post">
-    <div class="form-row">
-      <label for="username">Nome utente</label>
-      <input id="username" name="username" type="text" />
-    </div>
-    <div class="form-row">
-      <label for="password">Password</label>
-      <input id="password" name="password" type="password" />
-    </div>
-    <div class="form-row bottomRight">
-      <button>Invia</button>
-    </div>
-  </form>
+<div class="row justify-content-sm-center" style="margin-top: 30%;">
+  <div class="col-sm-auto">
+    <form action="/login" method="post">
+        <fieldset>
+          <legend>Login</legend>
+          <div class="control-group">
+            <label class="control-label" for="username">Nome utente</label>
+            <div class="controls">
+              <input id="username" name="username" type="text" />
+            </div>
+          </div>
+          <div class="control-group" style="margin-bottom: 10px;">
+            <label class="control-label" for="password">Password</label>
+            <div class="controls">
+              <input id="password" name="password" type="password" />
+            </div>
+          </div>
+          <button type="submit" class="btn">Invia</button>
+        </fieldset>
+      </form>
+  </div>
 </div>
