@@ -22,7 +22,30 @@
 
 <div class="container">
 
-  <h1 align="center">{{data.userFullName}}</h1>
+  <h1 align="center">{{data.firstName}} {{data.lastName}}</h1>
+
+  <div class="row justify-content-sm-center">
+    <form action="/admin/getUserReports" method="post">
+      <fieldset>
+        <input name="username" value="{{data.username}}" hidden />
+        <input name="firstName" value="{{data.firstName}}" hidden />
+        <input name="lastName" value="{{data.lastName}}" hidden />
+        <div class="control-group">
+          <label class="control-label" for="from">Mostra da:</label>
+          <div class="controls">
+            <input data-provide="datepicker" name="from" class="datepicker" type="text" class="form-control">
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="to">Fino a:</label>
+          <div class="controls">
+            <input data-provide="datepicker" name="to" class="datepicker" type="text" class="form-control">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-info">Invia</button>
+      </fieldset>
+    </form>
+  </div>
 
   {{#each data.result as |month|}}
   <div class="row">
@@ -64,4 +87,3 @@
   {{/each}}
 
 </div>
-

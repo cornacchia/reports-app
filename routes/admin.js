@@ -213,7 +213,6 @@ router.get('/sites', (req, res, next) => {
 router.get('/site', (req, res, next) => {
   const db = database.get()
   const code = req.query.code
-  console.log('CODE-----', req.query.code)
 
   async.parallel({
     site: siteCb => {
@@ -320,20 +319,29 @@ router.get('/site', (req, res, next) => {
 /* See user reports */
 router.post('/getUserReports', (req, res, next) => {
   const db = database.get()
+  let reportQuery = {username: req.body.username}
+  let vehicleQuery = {username: req.body.username}
+
+  let from = false
+  let to = false
+
+  if (req.body.from) from = moment(req.body.from, 'MM-DD-YYYY').toDate()
+  if (req.body.to) to = moment(req.body.to, 'MM-DD-YYYY').toDate()
+
+  if (from && !to) {
+    reportQuery['ts'] = {$gte: from}
+    vehicleQuery['ts'] = {$gte: from}
+  } else if (!from && to) {
+    reportQuery['ts'] = {$lte: to}
+    vehicleQuery['ts'] = {$lte: to}
+  } else if (from && to) {
+    reportQuery['$and'] = [{'ts': {$gte: from}}, {'ts': {$lte: to}}]
+    vehicleQuery['$and'] = [{'ts': {$gte: from}}, {'ts': {$lte: to}}]
+  }
 
   async.parallel({
-    user: uCb => {
-      db.collection('user').findOne({username: req.body.username}, (err, user) => {
-        if (err) {
-          console.error('Error retrieving user data', req.body.username, err)
-          return uCb(err)
-        }
-
-        return uCb(null, user.firstName + ' ' + user.lastName)
-      })
-    },
     reports: rCb => {
-      db.collection('report').find({username: req.body.username})
+      db.collection('report').find(reportQuery)
       .sort({ts: 1})
       .toArray((err, result) => {
         if (err) {
@@ -345,7 +353,7 @@ router.post('/getUserReports', (req, res, next) => {
       })
     },
     vehicles: vCb => {
-      db.collection('vehicle').find({username: req.body.username})
+      db.collection('vehicle').find(vehicleQuery)
       .sort({ts: 1})
       .toArray((err, result) => {
         if (err) {
@@ -398,7 +406,15 @@ router.post('/getUserReports', (req, res, next) => {
       }
     }
 
-    res.render('user-reports', { title: 'Elenco rapporti', data: {userFullName: data.user, result: result} })
+    res.render('user-reports', {
+      title: 'Elenco rapporti',
+      data: {
+        username: req.body.username,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        result: result
+      }
+    })
   })
 })
 
