@@ -1,107 +1,128 @@
-<ul class="navbar">
-  <li><a href="/admin/userList">Lista utenti</a></li>
-  <li><a class="active" href="/admin/manage">Amministra database</a></li>
-  <li><a href="/admin/sites">Siti</a></li>
-  <li class="logout"><a href="/logout">Logout</a></li>
-</ul>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/userList">Lista utenti</a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="/admin/manage">Amministra database</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/sites">Siti</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/logout">Logout</a>
+      </li>
+    </ul>
+  </div>
+</nav>
 
-<div class="row">
-  <form action="/admin/exportCsv" method="get">
-    <button class="pull-right">Esporta csv</button>
-  </form>
-</div>
+<div class="container" style="margin-top: 10px;">
 
-<h2 class="row">Veicoli</h2>
-<div class="row">
-  <table>
-    <thead>
-      <tr>
-        <td>Targa</td>
-        <td>Descrizione</td>
-        <td>Elimina</td>
-      </tr>
-    </thead>
-    <tbody>
-      {{#each elements.vehicle as |vehicle|}}
+  <h2>Veicoli</h2>
+
+  <div class="row">
+    <table class="table">
+      <thead>
         <tr>
-          <td>{{vehicle.plaque}}</td>
-          <td>{{vehicle.description}}</td>
-          <td>
-            <form action="/admin/removeMiscObject" method="post">
-              <input name="id" value={{vehicle._id}} hidden />
-              <input name="category" value="vehicle" hidden />
-              <button>Elimina</button>
-            </form>
-          </td>
+          <td>Targa</td>
+          <td>Descrizione</td>
+          <td>Elimina</td>
         </tr>
-      {{/each}}
-    </tbody>
-  </table>
-</div>
+      </thead>
+      <tbody>
+        {{#each elements.vehicle as |vehicle|}}
+          <tr>
+            <td>{{vehicle.plaque}}</td>
+            <td>{{vehicle.description}}</td>
+            <td>
+              <form action="/admin/removeMiscObject" method="post">
+                <input name="id" value={{vehicle._id}} hidden />
+                <input name="category" value="vehicle" hidden />
+                <button class="btn btn-danger">Elimina</button>
+              </form>
+            </td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
 
-<h3 class="row">Aggiungi nuovo veicolo</h3>
+  <div class="row justify-content-sm-center">
+    <form action="/admin/addMiscObject" method="post">
+      <fieldset>
+        <legend>Aggiungi nuovo veicolo</legend>
+        <div class="control-group">
+          <label class="control-label" for="plaque">Targa</label>
+          <div class="controls">
+            <input id="plaque" name="plaque" type="text" />
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="description">Descrizione</label>
+          <div class="controls">
+            <textarea id="description" name="description"></textarea>
+          </div>
+        </div>
+        <input name="category" value="vehicle" hidden />
+        <button type="submit" class="btn btn-success">Invia</button>
+      </fieldset>
+    </form>
+  </div>
 
-<div class="row">
-  <form action="/admin/addMiscObject" method="post">
-    <div class="form-row">
-      <label for="plaque">Targa</label>
-      <input id="plaque" name="plaque" type="text" />
-    </div>
-    <div class="form-row">
-      <label for="description">Descrizione</label>
-      <textarea id="description" name="description"></textarea>
-    </div>
-    <input name="category" value="vehicle" hidden />
-    <div class="form-row">
-      <button>Invia</button>
-    </div>
-  </form>
-</div>
+  <h2 class="row">Siti</h2>
 
-<h2 class="row">Siti</h2>
-
-<div class="row">
-  <table>
-    <thead>
-      <tr>
-        <td>Codice</td>
-        <td>Nome</td>
-        <td>Elimina</td>
-      </tr>
-    </thead>
-    <tbody>
-      {{#each elements.site as |site|}}
+  <div class="row">
+    <table class="table">
+      <thead>
         <tr>
-          <td>{{site.code}}</td>
-          <td>{{site.name}}</td>
-          <td>
-            <form action="/admin/removeMiscObject" method="post">
-              <input name="id" value={{site._id}} hidden />
-              <input name="category" value="site" hidden />
-              <button>Elimina</button>
-            </form>
-          </td>
+          <td>Codice</td>
+          <td>Nome</td>
+          <td>Elimina</td>
         </tr>
-      {{/each}}
-    </tbody>
-  </table>
-</div>
+      </thead>
+      <tbody>
+        {{#each elements.site as |site|}}
+          <tr>
+            <td>{{site.code}}</td>
+            <td>{{site.name}}</td>
+            <td>
+              <form action="/admin/removeMiscObject" method="post">
+                <input name="id" value={{site._id}} hidden />
+                <input name="category" value="site" hidden />
+                <button class="btn btn-danger">Elimina</button>
+              </form>
+            </td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
 
-<h3 class="row">Aggiungi nuovo sito</h3>
 
-<div class="row">
-  <form action="/admin/addMiscObject" method="post">
-    <div class="form-row">
-      <label for="code">Codice</label>
-      <input id="code" name="code" type="text" />
-    </div>
-    <div class="form-row">
-      <label for="name">Nome</label>
-      <textarea id="name" name="name"></textarea>
-    </div>
-    <input name="category" value="site" hidden />
-    <div class="form-row">
-      <button>Invia</button>
-    </div>
-  </form>
+  <div class="row justify-content-sm-center">
+    <form action="/admin/addMiscObject" method="post">
+      <fieldset>
+        <legend>Aggiungi nuovo sito</legend>
+        <div class="control-group">
+          <label class="control-label" for="code">Codice</label>
+          <div class="controls">
+            <input id="code" name="code" type="text" />
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="name">Nome</label>
+          <div class="controls">
+            <textarea id="name" name="name"></textarea>
+          </div>
+        </div>
+        <input name="category" value="site" hidden />
+        <button type="submit" class="btn btn-success">Invia</button>
+      </fieldset>
+    </form>
+  </div>
+
 </div>
