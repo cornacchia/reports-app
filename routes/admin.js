@@ -4,7 +4,8 @@ const async = require('async')
 const path = require('path')
 const moment = require('moment')
 const ObjectId = require('mongodb').ObjectID
-const jsonCsv = require('json-csv')
+const hourToString = require('../bin/hourToString')
+const ensureDirExistence = require('../bin/ensureDirExistence')
 const csvOptions = require('../bin/csvOptions')
 const database = require('../bin/db')
 const encrypt = require('../bin/encrypt')
@@ -427,85 +428,79 @@ router.post('/getUserReports', (req, res, next) => {
   })
 })
 
-/* Export reports csv */
-router.get('/exportCsv', (req, res, next) => {
-  const db = database.get()
+function squadToString (squad) {
+  let result = ''
+  for (let i in squad) {
+    result += squad[i]
+    if (i < squad.length - 1) {
+      result += ', '
+    }
+  }
 
-  db.collection('user').find({})
-  .project({_id: -1, username: 1, firstName: 1, lastName: 1})
-  .toArray((err, users) => {
+  return result
+}
+
+function vehiclesToString (vehicles) {
+  let result = ''
+  for (let i in vehicles) {
+    result += vehicles[i].vehicle
+    if (i < vehicles.length - 1) {
+      result += ', '
+    }
+  }
+  return result
+}
+
+function generateCsv (csvPath, firstName, lastName, data) {
+  const filePath = csvPath
+
+  fs.appendFileSync(filePath, firstName + ' ' + lastName + '\n', 'utf8')
+  for (let month in data) {
+    let monthData = data[month]
+    fs.appendFileSync(filePath, month + '\n', 'utf8')
+    fs.appendFileSync(filePath, 'Data; Attività; Squadra; Mezzi; Inizio; Pausa; Fine; Viag.\n', 'utf8')
+    for (let r in monthData.reports) {
+      let report = monthData.reports[r]
+      let newLine = report.date + ';' +
+        report.site + ': ' + report.notes + ';' +
+        squadToString(report.squad) + ';' +
+        vehiclesToString(report.vehicles) + ';' +
+        hourToString(report.workStarted) + '; ' +
+        report.workPause + '; ' +
+        hourToString(report.workStopped) + '; ' +
+        report.travelTime + '; ' +
+        report.totalWorkTime
+
+      fs.appendFileSync(filePath, newLine + '\n', 'utf8')
+    }
+    let totalNewLine = ';;;;;;;' +
+    monthData.totalTravelTime + ';' +
+    monthData.totalWorkTime
+    fs.appendFileSync(filePath, totalNewLine + '\n', 'utf8')
+    fs.appendFileSync(filePath, '\n', 'utf8')
+  }
+}
+
+/* Get user CSV */
+router.post('/getUserCsv', (req, res, next) => {
+  let from = false
+  let to = false
+  if (req.body.from) from = moment(req.body.from, 'MM-DD-YYYY').toDate()
+  if (req.body.to) to = moment(req.body.to, 'MM-DD-YYYY').toDate()
+
+  ensureDirExistence(config.csvFolderPath)
+
+  getUserReportData(req.body.username, from, to, (err, result) => {
     if (err) {
-      console.error(err)
-      return res.status(500).send('Error')
+      return res.status(500).send('Error querying for user reports')
     }
 
-    const dbOps = []
-    for (let user of users) {
-      let pipeline = [
-        {$match: {user: user.username}},
-        {$sort: {date: 1}},
-        {$group: {
-          _id: {month: {$month: '$date'}, year: {$year: '$date'}},
-          reports: {$push: '$$ROOT'}
-        }}
-      ]
+    const csvName = Date.now() + '.csv'
+    const csvPath = path.join(config.csvFolderPath, csvName)
 
-      dbOps.push(cb => {
-        db.collection('report')
-        .aggregate(pipeline, (err, result) => {
-          if (err) {
-            console.error(err)
-            return cb(err)
-          }
+    generateCsv(csvPath, req.body.firstName, req.body.lastName, result)
 
-          for (let month of result) {
-            month.totalWorkTime = 0
-            month.totalTravelTime = 0
-            for (let report of month.reports) {
-              let workHours = Math.abs(report.workStarted - report.workStopped) / 36e5
-              workHours -= (report.workPause / 60)
-              month.totalWorkTime += workHours
-              month.totalTravelTime += report.travelTime
-            }
-          }
-
-          return cb(null, result)
-        })
-      })
-    }
-
-    async.series(dbOps, (err, result) => {
-
-    })
-  })
-
-
-  db.collection('report').find({})
-  .toArray(function (err, reports) {
-    if (err) {
-      console.error(err)
-      return res.status(500).send('Error')
-    }
-
-    const options = csvOptions
-
-    jsonCsv.csvBuffered(reports, options, (err, csv) => {
-      if (err) {
-        console.error(err)
-        return res.status(500).send('Error')
-      }
-
-      var csvName = Date.now() + '.csv'
-
-      fs.writeFile(path.join(config.csvFolderPath, csvName), csv, err => {
-        if (err) {
-          console.error(err)
-          return res.status(500).send('Error')
-        }
-
-        return res.redirect('/admin/reportsList')
-      })
-    })
+    res.sendFile(csvPath)
   })
 })
 

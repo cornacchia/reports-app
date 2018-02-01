@@ -24,27 +24,53 @@
 
   <h1 align="center">{{data.firstName}} {{data.lastName}}</h1>
 
-  <div class="row justify-content-sm-center">
-    <form action="/admin/getUserReports" method="post">
-      <fieldset>
-        <input name="username" value="{{data.username}}" hidden />
-        <input name="firstName" value="{{data.firstName}}" hidden />
-        <input name="lastName" value="{{data.lastName}}" hidden />
-        <div class="control-group">
-          <label class="control-label" for="from">Mostra da:</label>
-          <div class="controls">
-            <input data-provide="datepicker" name="from" class="datepicker" type="text" class="form-control">
+  <div class="row justify-content-sm-center" style="margin-bottom: 10px;">
+    <div class="col-sm-6">
+      <form action="/admin/getUserReports" method="post">
+        <fieldset>
+          <legend>Cambia date tabelle</legend>
+          <input name="username" value="{{data.username}}" hidden />
+          <input name="firstName" value="{{data.firstName}}" hidden />
+          <input name="lastName" value="{{data.lastName}}" hidden />
+          <div class="control-group">
+            <label class="control-label" for="from">Mostra da:</label>
+            <div class="controls">
+              <input data-provide="datepicker" name="from" class="datepicker" type="text" class="form-control">
+            </div>
           </div>
-        </div>
-        <div class="control-group">
-          <label class="control-label" for="to">Fino a:</label>
-          <div class="controls">
-            <input data-provide="datepicker" name="to" class="datepicker" type="text" class="form-control">
+          <div class="control-group">
+            <label class="control-label" for="to">Fino a:</label>
+            <div class="controls">
+              <input data-provide="datepicker" name="to" class="datepicker" type="text" class="form-control">
+            </div>
           </div>
-        </div>
-        <button type="submit" class="btn btn-info">Invia</button>
-      </fieldset>
-    </form>
+          <button type="submit" class="btn btn-info">Invia</button>
+        </fieldset>
+      </form>
+    </div>
+    <div class="col-sm-6">
+      <form action="/admin/getUserCsv" method="post">
+        <fieldset>
+          <legend>Scarica CSV</legend>
+          <input name="username" value="{{data.username}}" hidden />
+          <input name="firstName" value="{{data.firstName}}" hidden />
+          <input name="lastName" value="{{data.lastName}}" hidden />
+          <div class="control-group">
+            <label class="control-label" for="from">Da:</label>
+            <div class="controls">
+              <input data-provide="datepicker" name="from" class="datepicker" type="text" class="form-control">
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="to">A:</label>
+            <div class="controls">
+              <input data-provide="datepicker" name="to" class="datepicker" type="text" class="form-control">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-info">Download</button>
+        </fieldset>
+      </form>
+    </div>
   </div>
 
   {{#each data.result as |month|}}
