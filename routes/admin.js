@@ -316,17 +316,10 @@ router.get('/site', (req, res, next) => {
   })
 })
 
-/* See user reports */
-router.post('/getUserReports', (req, res, next) => {
+function getUserReportData (username, from, to, cb) {
   const db = database.get()
-  let reportQuery = {username: req.body.username}
-  let vehicleQuery = {username: req.body.username}
-
-  let from = false
-  let to = false
-
-  if (req.body.from) from = moment(req.body.from, 'MM-DD-YYYY').toDate()
-  if (req.body.to) to = moment(req.body.to, 'MM-DD-YYYY').toDate()
+  let reportQuery = {username: username}
+  let vehicleQuery = {username: username}
 
   if (from && !to) {
     reportQuery['ts'] = {$gte: from}
@@ -366,7 +359,7 @@ router.post('/getUserReports', (req, res, next) => {
     }
   }, (err, data) => {
     if (err) {
-      return res.status(500).send('Error querying for user reports')
+      return cb(err)
     }
 
     let result = {}
@@ -402,8 +395,24 @@ router.post('/getUserReports', (req, res, next) => {
       } else {
         result[month] = {reports: {}}
         result[month]['reports'][vehicle.date] = {vehicles: [vehicle]}
-        result[month].monthYear = month        
+        result[month].monthYear = month
       }
+    }
+
+    return cb(null, result)
+  })
+}
+
+/* See user reports */
+router.post('/getUserReports', (req, res, next) => {
+  let from = false
+  let to = false
+  if (req.body.from) from = moment(req.body.from, 'MM-DD-YYYY').toDate()
+  if (req.body.to) to = moment(req.body.to, 'MM-DD-YYYY').toDate()
+
+  getUserReportData(req.body.username, from, to, (err, result) => {
+    if (err) {
+      return res.status(500).send('Error querying for user reports')
     }
 
     res.render('user-reports', {
