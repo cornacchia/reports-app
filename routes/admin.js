@@ -367,18 +367,30 @@ function getUserReportData (username, from, to, cb) {
     for (let report of data.reports) {
       let month = moment(report.ts).format('MMMM YYYY')
       let reportWorkTime = ((report.workStopped - report.workStarted) / 36e5) - report.workPause
+      let reportWorkTravelTime = reportWorkTime - (report.travelTime / config.calculations.workTravelTimeDenominator)
       report.totalWorkTime = reportWorkTime
+      report.totalWorkTravelTime = reportWorkTravelTime
       if (result[month]) {
         result[month]['reports'][report.date] = report
         result[month].totalWorkTime += reportWorkTime
+        result[month].totalWorkTravelTime += reportWorkTravelTime
         result[month].totalTravelTime += report.travelTime
+        result[month].daysWorked += 1
       } else {
         result[month] = {reports: {}}
         result[month]['reports'][report.date] = report
         result[month].totalWorkTime = reportWorkTime
         result[month].totalTravelTime = report.travelTime
+        result[month].totalWorkTravelTime = reportWorkTravelTime
         result[month].monthYear = month
+        result[month].daysWorked = 1
       }
+    }
+
+    for (let month in result) {
+      result[month].hoursWorked = result[month].daysWorked * 8
+      result[month].tr = result[month].totalWorkTravelTime - (result[month].daysWorked * 8)
+      result[month].trCalc = (Math.round((result[month].tr * 10) / config.calculations.tr) * config.calculations.tr) / 10
     }
 
     for (let vehicle of data.vehicles) {
@@ -469,14 +481,22 @@ function generateCsv (csvPath, firstName, lastName, data) {
         report.workPause + '; ' +
         hourToString(report.workStopped) + '; ' +
         report.travelTime + '; ' +
-        report.totalWorkTime
+        report.totalWorkTime + '; ' +
+        report.totalWorkTravelTime
 
       fs.appendFileSync(filePath, newLine + '\n', 'utf8')
     }
     let totalNewLine = ';;;;;;;' +
     monthData.totalTravelTime + ';' +
-    monthData.totalWorkTime
+    monthData.totalWorkTime + '; ' +
+    monthData.totalWorkTravelTime
     fs.appendFileSync(filePath, totalNewLine + '\n', 'utf8')
+    fs.appendFileSync(filePath, '\n', 'utf8')
+    let hoursWorkedNewline = ';;;;;;;;Totale ore;' +
+    monthData.hoursWorked
+    fs.appendFileSync(filePath, hoursWorkedNewline + '\n', 'utf8')
+    let trNewline = ';;;;;;;;;' + monthData.trCalc
+    fs.appendFileSync(filePath, trNewline + '\n', 'utf8')
     fs.appendFileSync(filePath, '\n', 'utf8')
   }
 }

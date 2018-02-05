@@ -102,12 +102,23 @@
             <td>{{report.workPause}}</td>
             <td>{{report.travelTime}}</td>
             <td>{{report.totalWorkTime}}</td>
+            <td>{{report.totalWorkTravelTime}}</td>
           </tr>
         {{/each}}
         <tr>
           <td colspan="7"><strong>Totali</strong></td>
           <td>{{month.totalTravelTime}}</td>
           <td>{{month.totalWorkTime}}</td>
+          <td>{{month.totalWorkTravelTime}}</td>
+        </tr>
+        <tr>
+          <td colspan="7"><strong>{{month.monthYear}}</strong></td>
+          <td>Totale ore</td>
+          <td>{{month.hoursWorked}}</td>
+        </tr>
+        <tr>
+          <td colspan="8"></td>
+          <td>{{month.trCalc}}</td>
         </tr>
       </tbody>
     </table>
