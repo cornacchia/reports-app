@@ -194,18 +194,22 @@ mobileLoggedIn,
 (req, res) => {
   const db = database.get()
   const date = dateToString(new Date())
-  const site = req.headers.site
   let saveTo = ''
 
-  const siteFolder = path.join(config.audioFolderPath, site)
-  const siteDateFolder = path.join(siteFolder, date)
-  ensureDirExistence(siteFolder)
-  ensureDirExistence(siteDateFolder)
-  let publicBase = path.join(config.audioPublicPath, site, date)
+  ensureDirExistence(config.fileHomePath)
+  const userFolder = path.join(config.fileHomePath, req.headers.username)
+  ensureDirExistence(userFolder)
+  const datePath = path.join(userFolder, date)
+  ensureDirExistence(datePath)
+
+  ensureDirExistence(config.audioPulicPath)
+  ensureDirExistence(path.join(config.audioPublicPath, user))
+  ensureDirExistence(path.join(config.audioPublicPath, user, date))
+  let publicBase = path.join(config.audioPublicPath, user, date)
 
   req.pipe(req.busboy)
   req.busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
-    saveTo = path.join(siteDateFolder, filename)
+    saveTo = path.join(datePath, filename)
     publicPath = path.join(publicBase, filename)
     file.pipe(fs.createWriteStream(saveTo))
   })
@@ -237,16 +241,20 @@ mobileLoggedIn,
   const site = req.headers.site
   let saveTo = ''
 
-  const siteFolder = path.join(config.pictureFolderPath, site)
-  const siteDateFolder = path.join(siteFolder, date)
+  ensureDirExistence(config.fileHomePath)
+  const userFolder = path.join(config.fileHomePath, req.headers.username)
+  ensureDirExistence(userFolder)
+  const datePath = path.join(userFolder, date)
+  ensureDirExistence(datePath)
 
-  ensureDirExistence(siteFolder)
-  ensureDirExistence(siteDateFolder)
-  let publicBase = path.join(config.picturePublicPath, site, date)
+  ensureDirExistence(config.audioPulicPath)
+  ensureDirExistence(path.join(config.audioPublicPath, user))
+  ensureDirExistence(path.join(config.audioPublicPath, user, date))
+  let publicBase = path.join(config.audioPublicPath, user, date)
 
   req.pipe(req.busboy)
   req.busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
-    saveTo = path.join(siteDateFolder, filename) + '.jpg'
+    saveTo = path.join(datePath, filename) + '.jpg'
     publicPath = path.join(publicBase, filename) + '.jpg'
     file.pipe(fs.createWriteStream(saveTo))
   })
