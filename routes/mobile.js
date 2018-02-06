@@ -122,13 +122,35 @@ mobileLoggedIn,
     notes: req.body.notes
   }
 
-  db.collection('report').insertOne(generalData, err => {
+  db.collection('report').findOne({
+    username: req.headers.username,
+    date: moment().format('D MMMM YYYY')
+  }, (err, report) => {
     if (err) {
-      console.error(err)
+      console.error('Error retrieving today report while saving new report', err)
       return res.status(500).send()
     }
 
-    return res.status(200).send()
+    if (report) {
+      db.collection('report').updateOne({_id: report._id},
+      {$set: generalData}, err => {
+        if (err) {
+          console.error('Error updating report', err)
+          return res.status(500).send()
+        }
+
+        return res.status(200).send()
+      })
+    } else {
+      db.collection('report').insertOne(generalData, err => {
+        if (err) {
+          console.error(err)
+          return res.status(500).send()
+        }
+    
+        return res.status(200).send()
+      })
+    }
   })
 })
 
