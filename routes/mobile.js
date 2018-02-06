@@ -5,6 +5,7 @@ const fs = require('fs')
 const moment = require('moment')
 const jwt = require('jsonwebtoken')
 const busboy = require('connect-busboy')
+const ObjectId = require('mongodb').ObjectID
 const database = require('../bin/db')
 const verify = require('../bin/verifyPassword')
 const mobileLoggedIn = require('../bin/mobileLoggedIn')
@@ -286,10 +287,46 @@ mobileLoggedIn,
   }, (err, report) => {
     if (err) {
       console.error('Error retrieving today report', err)
-      return res.serverError()
+      return res.status(500).send()
     }
 
     return res.send(report)
+  })
+})
+
+router.get('/getTodayVehicles',
+mobileLoggedIn,
+(req, res) => {
+  const db = database.get()
+  const date = moment().format('D MMMM YYYY')
+  const user = req.headers.username
+
+  db.collection('vehicle').find({
+    username: user,
+    date: date
+  }).toArray((err, vehicles) => {
+    if (err) {
+      console.error('Error retrieving today vehicles', err)
+      return res.status(500).send()
+    }
+
+    return res.send(vehicles)
+  })
+})
+
+router.post('/deleteVehicle',
+mobileLoggedIn,
+(req, res) => {
+  const db = database.get()
+  const id = new ObjectId(req.body.id)
+
+  db.collection('vehicle').deleteOne({_id: id}, err => {
+    if (err) {
+      console.error('Error deleting vehicle report', err)
+      return res.status(500).send()
+    }
+
+    return res.status(200).send()
   })
 })
 
