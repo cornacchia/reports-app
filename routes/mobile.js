@@ -108,7 +108,7 @@ mobileLoggedIn,
   const db = database.get()
   const generalData = {
     username: req.headers.username,
-    site: req.headers.site,
+    site: req.body.site,
     ts: new Date(),
     date: moment().format('D MMMM YYYY'),
     meteo: req.body.meteo,
@@ -138,7 +138,6 @@ mobileLoggedIn,
   const db = database.get()
   let vehicleData = {
     username: req.headers.username,
-    site: req.headers.site,
     ts: new Date(),
     date: moment().format('D MMMM YYYY'),
     vehicle: req.body.vehicle,
@@ -217,7 +216,6 @@ mobileLoggedIn,
   req.busboy.on('finish', () => {
     const audioData = {
       user: req.headers.username,
-      site: req.headers.site,
       date: new Date(),
       file: saveTo,
       path: publicPath
@@ -238,7 +236,6 @@ mobileLoggedIn,
 (req, res) => {
   const db = database.get()
   const date = dateToString(new Date())
-  const site = req.headers.site
   let saveTo = ''
 
   ensureDirExistence(config.fileHomePath)
@@ -261,7 +258,6 @@ mobileLoggedIn,
   req.busboy.on('finish', () => {
     const pictureData = {
       user: req.headers.username,
-      site: req.headers.site,
       date: new Date(),
       file: saveTo,
       path: publicPath
@@ -274,6 +270,26 @@ mobileLoggedIn,
 
       return res.status(200).send()
     })
+  })
+})
+
+router.get('/getTodayReport',
+mobileLoggedIn,
+(req, res) => {
+  const db = database.get()
+  const date = moment().format('D MMMM YYYY')
+  const user = req.headers.username
+
+  db.collection('report').findOne({
+    username: user,
+    date: date
+  }, (err, report) => {
+    if (err) {
+      console.error('Error retrieving today report', err)
+      return res.serverError()
+    }
+
+    return res.send(report)
   })
 })
 
