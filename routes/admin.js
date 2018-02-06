@@ -524,4 +524,72 @@ router.post('/getUserCsv', (req, res, next) => {
   })
 })
 
+function getAllReports (from, to, done) {
+  const db = database.get()
+  db.collection('user').find({})
+  .toArray((err, users) => {
+    if (err) {
+      console.error('Error retrieving all users', err)
+      return res.status(500).send()
+    }
+
+    const dbOps = {}
+
+    for (let user of users) {
+      dbOps[user.firstName + ' ' + user.lastName] = cb => {
+        getUserReportData(user.username, from, to, (err, result) => {
+          if (err) {
+            return cb(err)
+          }
+          result.firstName = user.firstName
+          result.lastName = user.lastName
+          return cb(null, result)
+        })
+      }
+    }
+
+    async.series(dbOps, (err, result) => {
+      if (err) {
+        console.error(err)
+        return done(err)
+      }
+
+      return done(null, result)
+    })
+  })
+}
+
+/* Global reports page */
+router.get('/reports', (req, res) => {
+  return res.render('reports')
+})
+
+router.post('/getAllCsv', (req, res) => {
+  let from = false
+  let to = false
+  if (req.body.from) from = moment(req.body.from, 'MM-DD-YYYY').toDate()
+  if (req.body.to) to = moment(req.body.to, 'MM-DD-YYYY').toDate()
+
+  getAllReports(from, to, (err, result) => {
+    if (err) {
+      return res.status(500).send()
+    }
+
+    const csvName = Date.now() + '.csv'
+    const csvPath = path.join(config.csvFolderPath, csvName)
+
+    for (let user in result) {
+      var reports = result[user]
+      var firstName = reports.firstName
+      var lastName = reports.lastName
+      delete reports.firstName
+      delete reports.lastName
+      generateCsv(csvPath, firstName, lastName, reports)
+    }
+
+
+    res.sendFile(csvPath)
+  })
+})
+
 module.exports = router

@@ -1,0 +1,48 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/userList">Lista utenti</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/manage">Amministra database</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" href="/admin/reports">Rapporti</a>
+      </li>
+    </ul>
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="/logout">Logout</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="row justify-content-sm-center" style="margin-bottom: 10px;">
+    <div class="col-sm-12">
+      <form action="/admin/getAllCsv" method="post">
+        <fieldset>
+          <legend>Scarica CSV</legend>
+          <div class="control-group">
+            <label class="control-label" for="from">Da:</label>
+            <div class="controls">
+              <input data-provide="datepicker" name="from" class="datepicker" type="text" class="form-control">
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="to">A:</label>
+            <div class="controls">
+              <input data-provide="datepicker" name="to" class="datepicker" type="text" class="form-control">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-info">Download</button>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+</div>
